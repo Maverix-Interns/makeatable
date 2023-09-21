@@ -10,12 +10,12 @@ public class Favourite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private User user;
 
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 }

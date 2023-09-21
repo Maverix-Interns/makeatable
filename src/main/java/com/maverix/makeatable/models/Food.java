@@ -20,11 +20,11 @@ public class Food {
 
     private Double price;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "rating_id")
     private Rating rating;
 

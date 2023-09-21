@@ -5,10 +5,7 @@ import lombok.Data;
 
 
 @Data
-@Entity
 public class RatingDto {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private Double Rating;
 }

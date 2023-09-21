@@ -13,11 +13,11 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 

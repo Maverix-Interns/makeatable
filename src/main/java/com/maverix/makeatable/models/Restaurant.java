@@ -25,7 +25,7 @@ public class Restaurant {
 
     private String imageUrl;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -40,7 +40,7 @@ public class Restaurant {
 
     private String description;
 
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JoinColumn(name = "rating_id")
     private Rating rating;
 
