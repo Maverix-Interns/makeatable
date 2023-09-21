@@ -5,7 +5,10 @@ import com.maverix.makeatable.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 @Data
 @NoArgsConstructor
@@ -25,7 +28,7 @@ public class Restaurant {
 
     private String imageUrl;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -40,7 +43,7 @@ public class Restaurant {
 
     private String description;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     @JoinColumn(name = "rating_id")
     private Rating rating;
 
@@ -48,6 +51,12 @@ public class Restaurant {
     private RoomType typeRoom;
 
     private boolean status;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
 
 }

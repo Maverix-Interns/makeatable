@@ -4,6 +4,10 @@ import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -25,4 +29,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
+
 }

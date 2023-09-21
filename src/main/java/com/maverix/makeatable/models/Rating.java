@@ -2,6 +2,10 @@ package com.maverix.makeatable.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 
 @Data
@@ -12,4 +16,9 @@ public class Rating {
     private Long id;
     private Double Rating;
     private Long rateNum;
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }

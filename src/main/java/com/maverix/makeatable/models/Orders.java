@@ -1,8 +1,12 @@
 package com.maverix.makeatable.models;
 
 import com.maverix.makeatable.enums.RoomType;
+import com.maverix.makeatable.models.User;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
@@ -13,9 +17,10 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    @CreatedBy
+    private User createdByUser;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "restaurant_id")
@@ -27,4 +32,10 @@ public class Orders {
 
     @Enumerated(EnumType.STRING)
     private RoomType typeRoom;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }

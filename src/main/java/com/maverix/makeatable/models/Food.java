@@ -3,6 +3,10 @@ package com.maverix.makeatable.models;
 import com.maverix.makeatable.enums.FoodCategory;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -20,11 +24,11 @@ public class Food {
 
     private Double price;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @ManyToOne(optional = true)
+    @ManyToOne
     @JoinColumn(name = "rating_id")
     private Rating rating;
 
@@ -33,4 +37,10 @@ public class Food {
     private Long calories;
 
     private String description;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 }
