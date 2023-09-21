@@ -1,9 +1,8 @@
 package com.maverix.makeatable.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.maverix.makeatable.enums.FoodCategory;
+import com.maverix.makeatable.enums.UserType;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -12,9 +11,18 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String fullName;
+
     private String email;
+
     private String password;
+
     private String mobileNum;
-    private String preference;
+
+    @Enumerated(EnumType.STRING)
+    private FoodCategory preference;
+
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
 }

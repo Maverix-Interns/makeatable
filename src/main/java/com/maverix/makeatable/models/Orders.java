@@ -1,5 +1,6 @@
 package com.maverix.makeatable.models;
 
+import com.maverix.makeatable.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -18,7 +20,11 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
     private LocalDateTime dateTime;
+
     private Long seatNum;
-    private String typeRoom;
+
+    @Enumerated(EnumType.STRING)
+    private RoomType typeRoom;
 }
