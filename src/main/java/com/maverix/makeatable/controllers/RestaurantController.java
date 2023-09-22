@@ -12,26 +12,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/restaurants")
+@RequestMapping("restaurants")
 public class RestaurantController {
 
     private final RestaurantService restaurantService;
 
     public RestaurantController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
-    }
-
-    @GetMapping
-    public ResponseEntity<Response<List<RestaurantGetDto>>> getAllRestaurants() {
-        List<RestaurantGetDto> restaurants = restaurantService.getAllRestaurants();
-        Response<List<RestaurantGetDto>> response = Response.<List<RestaurantGetDto>>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Restaurants retrieved successfully")
-                .data(restaurants)
-                .build();
-        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
@@ -78,12 +65,7 @@ public class RestaurantController {
 
         return ResponseEntity.ok(response);
     }
-    @PutMapping("admin/{id}")
-    public ResponseEntity<String> approveRestaurant(@PathVariable Long id) {
-        restaurantService.approveRestaurant(id);
 
-        return ResponseEntity.ok("approved");
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<Void>> deleteRestaurant(@PathVariable Long id) {

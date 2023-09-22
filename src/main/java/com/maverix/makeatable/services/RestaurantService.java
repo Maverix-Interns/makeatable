@@ -50,6 +50,22 @@ public class RestaurantService {
         }
         return null;
     }
+    public RestaurantGetDto approveRestaurant(Long id) {
+        Restaurant restaurant = restaurantRepository.getById(id);
+        restaurant.setStatus(RestStatus.APPROVED);
+        restaurantRepository.save(restaurant);
+
+        return convertToGetDto(restaurant);
+
+    }
+    public RestaurantGetDto declineRestaurant(Long id) {
+        Restaurant restaurant = restaurantRepository.getById(id);
+        restaurant.setStatus(RestStatus.DECLINED);
+        restaurantRepository.save(restaurant);
+
+        return convertToGetDto(restaurant);
+
+    }
 
     public void deleteRestaurant(Long id) {
 
@@ -71,11 +87,5 @@ public class RestaurantService {
         return restaurant;
     }
 
-    public RestaurantGetDto approveRestaurant(Long id) {
-        Restaurant restaurant = restaurantRepository.getById(id);
-        restaurant.setStatus(RestStatus.APPROVED);
-        restaurantRepository.save(restaurant);
-        return convertToGetDto(restaurant);
 
-    }
 }
