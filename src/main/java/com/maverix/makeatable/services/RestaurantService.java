@@ -2,6 +2,7 @@ package com.maverix.makeatable.services;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
+import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
@@ -51,6 +52,7 @@ public class RestaurantService {
     }
 
     public void deleteRestaurant(Long id) {
+
         restaurantRepository.deleteById(id);
     }
 
@@ -63,8 +65,17 @@ public class RestaurantService {
     private Restaurant convertToEntity(RestaurantPostDto restaurantPostDto) {
         Restaurant restaurant = new Restaurant();
         BeanUtils.copyProperties(restaurantPostDto, restaurant);
+        restaurant.setStatus(RestStatus.PENDING);
         restaurant.setCreatedAt(LocalDateTime.now());
         restaurant.setUpdatedAt(LocalDateTime.now());
         return restaurant;
+    }
+
+    public RestaurantGetDto approveRestaurant(Long id) {
+        Restaurant restaurant = restaurantRepository.getById(id);
+        restaurant.setStatus(RestStatus.APPROVED);
+        restaurantRepository.save(restaurant);
+        return convertToGetDto(restaurant);
+
     }
 }

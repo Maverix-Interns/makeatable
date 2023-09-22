@@ -78,6 +78,12 @@ public class RestaurantController {
 
         return ResponseEntity.ok(response);
     }
+    @PutMapping("admin/{id}")
+    public ResponseEntity<String> approveRestaurant(@PathVariable Long id) {
+        restaurantService.approveRestaurant(id);
+
+        return ResponseEntity.ok("approved");
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<Void>> deleteRestaurant(@PathVariable Long id) {

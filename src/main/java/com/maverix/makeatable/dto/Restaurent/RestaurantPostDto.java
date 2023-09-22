@@ -22,5 +22,4 @@ public class RestaurantPostDto {
     private String description;
     private Long ratingId;
     private RoomType typeRoom;
-    private boolean status;
 }

@@ -1,6 +1,7 @@
 package com.maverix.makeatable.models;
 
 import com.maverix.makeatable.enums.FoodCategory;
+import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.enums.RoomType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -50,7 +51,7 @@ public class Restaurant {
     @Enumerated(EnumType.STRING)
     private RoomType typeRoom;
 
-    private boolean status;
+    private RestStatus status;
 
     @CreatedDate
     private LocalDateTime createdAt;

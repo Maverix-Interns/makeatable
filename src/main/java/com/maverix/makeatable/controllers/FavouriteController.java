@@ -20,17 +20,6 @@ public class FavouriteController {
         this.favouriteService = favouriteService;
     }
 
-    @GetMapping
-    public ResponseEntity<Response<List<FavouriteGetDto>>> getAllFavourites() {
-        List<FavouriteGetDto> favourites = favouriteService.getAllFavourites();
-        Response<List<FavouriteGetDto>> response = Response.<List<FavouriteGetDto>>builder()
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Favourites retrieved successfully")
-                .data(favourites)
-                .build();
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<FavouriteGetDto>> getFavouriteById(@PathVariable Long id) {
