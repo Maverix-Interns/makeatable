@@ -1,6 +1,6 @@
 package com.maverix.makeatable.services;
-import com.maverix.makeatable.dto.Favourite.FavouritegetDto;
-import com.maverix.makeatable.dto.Favourite.FavouritepostDto;
+import com.maverix.makeatable.dto.Favourite.FavouriteGetDto;
+import com.maverix.makeatable.dto.Favourite.FavouritePostDto;
 import com.maverix.makeatable.models.Favourite;
 import com.maverix.makeatable.repositories.FavouriteRepository;
 import org.springframework.beans.BeanUtils;
@@ -20,19 +20,19 @@ public class FavouriteService {
         this.favouriteRepository = favouriteRepository;
     }
 
-    public List<FavouritegetDto> getAllFavourites() {
+    public List<FavouriteGetDto> getAllFavourites() {
         List<Favourite> favourites = favouriteRepository.findAll();
         return favourites.stream()
                 .map(this::convertToFavouritegetDto)
                 .collect(Collectors.toList());
     }
 
-    public FavouritegetDto getFavouriteById(Long id) {
+    public FavouriteGetDto getFavouriteById(Long id) {
         Optional<Favourite> optionalFavourite = favouriteRepository.findById(id);
         return optionalFavourite.map(this::convertToFavouritegetDto).orElse(null);
     }
 
-    public FavouritepostDto createFavourite(FavouritepostDto favouritepostDto) {
+    public FavouritePostDto createFavourite(FavouritePostDto favouritepostDto) {
         Favourite favourite = convertToEntity(favouritepostDto);
         Favourite savedFavourite = favouriteRepository.save(favourite);
         return convertToFavouritepostDto(savedFavourite);
@@ -42,20 +42,20 @@ public class FavouriteService {
     public void deleteFavourite(Long id) {
         favouriteRepository.deleteById(id);
     }
-    private FavouritegetDto convertToFavouritegetDto(Favourite favourite) {
-        FavouritegetDto favouritegetDto = new FavouritegetDto();
+    private FavouriteGetDto convertToFavouritegetDto(Favourite favourite) {
+        FavouriteGetDto favouritegetDto = new FavouriteGetDto();
         BeanUtils.copyProperties(favourite, favouritegetDto);
         return favouritegetDto;
     }
 
 
-    private FavouritepostDto convertToFavouritepostDto(Favourite favourite) {
-        FavouritepostDto favouritepostDto = new FavouritepostDto();
+    private FavouritePostDto convertToFavouritepostDto(Favourite favourite) {
+        FavouritePostDto favouritepostDto = new FavouritePostDto();
         BeanUtils.copyProperties(favourite, favouritepostDto);
         return favouritepostDto;
     }
 
-    private Favourite convertToEntity(FavouritepostDto favouritepostDto) {
+    private Favourite convertToEntity(FavouritePostDto favouritepostDto) {
         Favourite favourite = new Favourite();
         BeanUtils.copyProperties(favouritepostDto, favourite);
         favourite.setCreatedDate(LocalDateTime.now());

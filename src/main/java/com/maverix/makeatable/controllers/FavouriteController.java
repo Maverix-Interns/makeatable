@@ -1,7 +1,7 @@
 package com.maverix.makeatable.controllers;
 
-import com.maverix.makeatable.dto.Favourite.FavouritegetDto;
-import com.maverix.makeatable.dto.Favourite.FavouritepostDto;
+import com.maverix.makeatable.dto.Favourite.FavouriteGetDto;
+import com.maverix.makeatable.dto.Favourite.FavouritePostDto;
 import com.maverix.makeatable.services.FavouriteService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
@@ -21,9 +21,9 @@ public class FavouriteController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<List<FavouritegetDto>>> getAllFavourites() {
-        List<FavouritegetDto> favourites = favouriteService.getAllFavourites();
-        Response<List<FavouritegetDto>> response = Response.<List<FavouritegetDto>>builder()
+    public ResponseEntity<Response<List<FavouriteGetDto>>> getAllFavourites() {
+        List<FavouriteGetDto> favourites = favouriteService.getAllFavourites();
+        Response<List<FavouriteGetDto>> response = Response.<List<FavouriteGetDto>>builder()
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .message("Favourites retrieved successfully")
@@ -33,9 +33,9 @@ public class FavouriteController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response<FavouritegetDto>> getFavouriteById(@PathVariable Long id) {
-        FavouritegetDto favourite = favouriteService.getFavouriteById(id);
-        Response<FavouritegetDto> response = Response.<FavouritegetDto>builder()
+    public ResponseEntity<Response<FavouriteGetDto>> getFavouriteById(@PathVariable Long id) {
+        FavouriteGetDto favourite = favouriteService.getFavouriteById(id);
+        Response<FavouriteGetDto> response = Response.<FavouriteGetDto>builder()
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .message("Favourite retrieved successfully")
@@ -45,11 +45,11 @@ public class FavouriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Response<FavouritepostDto>> createFavourite(@RequestBody FavouritepostDto favouritepostDto) {
+    public ResponseEntity<Response<FavouritePostDto>> createFavourite(@RequestBody FavouritePostDto favouritepostDto) {
 
-        FavouritepostDto createdFavourite = favouriteService.createFavourite(favouritepostDto);
+        FavouritePostDto createdFavourite = favouriteService.createFavourite(favouritepostDto);
 
-        Response<FavouritepostDto> response = Response.<FavouritepostDto>builder()
+        Response<FavouritePostDto> response = Response.<FavouritePostDto>builder()
                 .statusCode(HttpStatus.CREATED.value())
                 .status(HttpStatus.CREATED)
                 .message("Favourite created successfully")
