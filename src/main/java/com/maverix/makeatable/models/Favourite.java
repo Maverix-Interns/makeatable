@@ -17,7 +17,6 @@ public class Favourite {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @CreatedBy
     private User createdByUser;
 
     @ManyToOne
