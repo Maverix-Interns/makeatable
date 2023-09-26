@@ -1,5 +1,6 @@
 package com.maverix.makeatable.controllers;
 
+import com.maverix.makeatable.dto.Orders.LastOrderDto;
 import com.maverix.makeatable.dto.Orders.OrdersGetDto;
 import com.maverix.makeatable.dto.Orders.OrdersPostDto;
 import com.maverix.makeatable.dto.Orders.OrdersPutDto;
@@ -34,6 +35,10 @@ public class OrdersController {
                 .build();
         return ResponseEntity.ok(response);
     }
+        @GetMapping("/last/{userId}")
+        public LastOrderDto getLastOrderForUser(@PathVariable Long userId) {
+            return ordersService.getLastOrderForUser(userId);
+        }
 
     @GetMapping("/{id}")
     public ResponseEntity<Response<OrdersGetDto>> getOrderById(@PathVariable Long id) {

@@ -1,10 +1,9 @@
 package com.maverix.makeatable.services;
 
-import com.maverix.makeatable.dto.Orders.OrdersGetDto;
-import com.maverix.makeatable.dto.Orders.OrdersPostDto;
-import com.maverix.makeatable.dto.Orders.OrdersPutDto;
+import com.maverix.makeatable.dto.Orders.*;
 import com.maverix.makeatable.models.Orders;
 import com.maverix.makeatable.repositories.OrdersRepository;
+import com.maverix.makeatable.repositories.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +16,11 @@ import java.util.stream.Collectors;
 public class OrdersService {
 
     private final OrdersRepository ordersRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    public OrdersService(OrdersRepository ordersRepository) {
+    public OrdersService(OrdersRepository ordersRepository, RestaurantRepository restaurantRepository) {
         this.ordersRepository = ordersRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     public List<OrdersGetDto> getAllOrders() {
@@ -28,7 +29,29 @@ public class OrdersService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+    public LastOrderDto getLastOrderForUser(Long userId){
+        Optional<Orders> lastOrderOptional = ordersRepository.findTopByCreatedByUserIdOrderByDateTimeDesc(userId);
+        if (lastOrderOptional.isPresent()) {
+            Orders lastOrder = lastOrderOptional.get();
 
+
+            String location = "";
+            if (lastOrder.getRestaurant() != null) {
+                location = lastOrder.getRestaurant().getLocation();
+            }
+
+            LastOrderDto lastOrderDto = new LastOrderDto();
+            lastOrderDto.setId(lastOrder.getId());
+            lastOrderDto.setLocation(location);
+            lastOrderDto.setDateTime(lastOrder.getDateTime());
+            lastOrderDto.setRoomType(lastOrder.getTypeRoom());
+
+            return new OrderResponseDTO(lastOrderDto).getLastOrder();
+        } else {
+
+            return null;
+        }
+    }
     public OrdersGetDto getOrderById(Long id) {
         Optional<Orders> optionalOrders = ordersRepository.findById(id);
         return optionalOrders.map(this::convertToDto).orElse(null);
