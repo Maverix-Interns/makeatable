@@ -20,7 +20,7 @@ public class OrdersController {
         this.ordersService = ordersService;
     }
 
-    @GetMapping("/restaurant/{restaurantId}")
+    @GetMapping("restaurant/{restaurantId}")
     public Response<List<OrderDetailsDTO>> getOrdersForRestaurant(@PathVariable Long restaurantId) {
         List<OrderDetailsDTO> orderDetailsDTOList = ordersService.getOrderDetailsByRestaurantId(restaurantId);
         return Response.<List<OrderDetailsDTO>>builder()

@@ -1,10 +1,13 @@
 package com.maverix.makeatable.services;
 
 import com.maverix.makeatable.dto.Orders.*;
-import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.models.Orders;
+import com.maverix.makeatable.models.Restaurant;
+import com.maverix.makeatable.models.User;
 import com.maverix.makeatable.repositories.OrdersRepository;
 import com.maverix.makeatable.repositories.RestaurantRepository;
+import com.maverix.makeatable.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +21,12 @@ public class OrdersService {
 
     private final OrdersRepository ordersRepository;
     private final RestaurantRepository restaurantRepository;
+    private final UserRepository userRepository;
 
-    public OrdersService(OrdersRepository ordersRepository, RestaurantRepository restaurantRepository) {
+    public OrdersService(OrdersRepository ordersRepository, RestaurantRepository restaurantRepository, UserRepository userRepository) {
         this.ordersRepository = ordersRepository;
         this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
     }
 
     public List<OrdersGetDto> getAllOrders() {
@@ -72,6 +77,21 @@ public class OrdersService {
         Orders orders = convertToEntity(ordersPostDto);
         Orders savedOrder = ordersRepository.save(orders);
         return convertToDto(savedOrder);
+    }
+    public void createOrder(OrderRequestDTO orderRequest) {
+
+        Restaurant restaurant = restaurantRepository.findByFullName(orderRequest.getRestName());
+        User user = userRepository.findById(orderRequest.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + orderRequest.getUserId()));
+
+        Orders order = new Orders();
+        order.setDateTime(LocalDateTime.now());
+        order.setSeatNum(orderRequest.getSeatNum());
+        order.setTypeRoom(orderRequest.getTypeRoom());
+        order.setRestaurant(restaurant);
+        order.setCreatedByUser(user);
+
+        ordersRepository.save(order);
     }
 
     public OrdersGetDto updateOrder(Long id, OrdersPutDto ordersPutDto) {
