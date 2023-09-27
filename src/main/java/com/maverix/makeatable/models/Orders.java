@@ -1,5 +1,6 @@
 package com.maverix.makeatable.models;
 
+import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.enums.RoomType;
 import com.maverix.makeatable.models.User;
 import jakarta.persistence.*;
@@ -25,7 +26,6 @@ public class Orders {
     @ManyToOne(optional = true)
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
-
     private LocalDateTime dateTime;
 
     private Long seatNum;

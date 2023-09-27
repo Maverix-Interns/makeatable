@@ -1,9 +1,6 @@
 package com.maverix.makeatable.controllers;
 
-import com.maverix.makeatable.dto.Orders.LastOrderDto;
-import com.maverix.makeatable.dto.Orders.OrdersGetDto;
-import com.maverix.makeatable.dto.Orders.OrdersPostDto;
-import com.maverix.makeatable.dto.Orders.OrdersPutDto;
+import com.maverix.makeatable.dto.Orders.*;
 import com.maverix.makeatable.services.OrdersService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
@@ -23,6 +20,17 @@ public class OrdersController {
         this.ordersService = ordersService;
     }
 
+    @GetMapping("/restaurant/{restaurantId}")
+    public Response<List<OrderDetailsDTO>> getOrdersForRestaurant(@PathVariable Long restaurantId) {
+        List<OrderDetailsDTO> orderDetailsDTOList = ordersService.getOrderDetailsByRestaurantId(restaurantId);
+        return Response.<List<OrderDetailsDTO>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message("Order details fetched successfully")
+                .data(orderDetailsDTOList)
+                .timeStamp(LocalDateTime.now())
+                .build();
+    }
     @GetMapping
     public ResponseEntity<Response<List<OrdersGetDto>>> getAllOrders() {
         List<OrdersGetDto> orders = ordersService.getAllOrders();

@@ -1,6 +1,7 @@
 package com.maverix.makeatable.services;
 
 import com.maverix.makeatable.dto.Orders.*;
+import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.models.Orders;
 import com.maverix.makeatable.repositories.OrdersRepository;
 import com.maverix.makeatable.repositories.RestaurantRepository;
@@ -29,12 +30,22 @@ public class OrdersService {
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
     }
+    public List<OrderDetailsDTO> getOrderDetailsByRestaurantId(Long restaurantId) {
+        List<Orders> orders = ordersRepository.findByRestaurantId(restaurantId);
+        return orders.stream().map(this::mapOrderToOrderDetailsDTO).collect(Collectors.toList());
+    }
+
+    private OrderDetailsDTO mapOrderToOrderDetailsDTO(Orders order) {
+        OrderDetailsDTO orderDetailsDTO = new OrderDetailsDTO();
+        orderDetailsDTO.setRoomType(order.getTypeRoom());
+        orderDetailsDTO.setNumberOfSeats(Math.toIntExact(order.getSeatNum()));
+        orderDetailsDTO.setUserName(order.getCreatedByUser().getFullName());
+        return orderDetailsDTO;
+    }
     public LastOrderDto getLastOrderForUser(Long userId){
         Optional<Orders> lastOrderOptional = ordersRepository.findTopByCreatedByUserIdOrderByDateTimeDesc(userId);
         if (lastOrderOptional.isPresent()) {
             Orders lastOrder = lastOrderOptional.get();
-
-
             String location = "";
             if (lastOrder.getRestaurant() != null) {
                 location = lastOrder.getRestaurant().getLocation();
