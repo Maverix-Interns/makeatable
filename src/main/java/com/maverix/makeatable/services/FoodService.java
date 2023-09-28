@@ -70,4 +70,11 @@ public class FoodService {
         food.setUpdatedAt(LocalDateTime.now());
         return food;
     }
+    public List<FoodGetDto> getTop5RatedFoods() {
+        List<Food> top5Foods = foodRepository.findTop5ByOrderByAverageRatingDesc();
+        return top5Foods.stream()
+                .map(this::convertToFoodDto)
+                .collect(Collectors.toList());
+    }
+
 }

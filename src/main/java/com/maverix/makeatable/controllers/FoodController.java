@@ -92,5 +92,17 @@ public class FoodController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
+    @GetMapping("/top")
+    public ResponseEntity<Response<List<FoodGetDto>>> getTopFoods() {
+        List<FoodGetDto> topFoods = foodService.getTop5RatedFoods();
+        Response<List<FoodGetDto>> response = Response.<List<FoodGetDto>>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message("Top 5 foods retrieved successfully")
+                .data(topFoods)
+                .build();
+        return ResponseEntity.ok(response);
+    }
 
 }
