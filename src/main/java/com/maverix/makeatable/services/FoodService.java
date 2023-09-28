@@ -2,8 +2,11 @@ package com.maverix.makeatable.services;
 import com.maverix.makeatable.dto.Food.FoodGetDto;
 import com.maverix.makeatable.dto.Food.FoodPostDto;
 import com.maverix.makeatable.dto.Food.FoodPutDto;
+import com.maverix.makeatable.exceptions.RestaurantNotFoundException;
 import com.maverix.makeatable.models.Food;
+import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.FoodRepository;
+import com.maverix.makeatable.repositories.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,9 +19,11 @@ import java.util.stream.Collectors;
 public class FoodService {
 
     private final FoodRepository foodRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    public FoodService(FoodRepository foodRepository) {
+    public FoodService(FoodRepository foodRepository, RestaurantRepository restaurantRepository) {
         this.foodRepository = foodRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     public List<FoodGetDto> getAllFoods() {
@@ -77,4 +82,24 @@ public class FoodService {
                 .collect(Collectors.toList());
     }
 
+    public FoodGetDto addFood(Long restaurantId, FoodPostDto foodPostDto) {
+        if (foodPostDto == null || !isValidFoodPostDto(foodPostDto)) {
+            throw new IllegalArgumentException("Invalid food creation request. Please provide valid food data.");
+        }
+        if (foodPostDto.getName() == null || foodPostDto.getName().isEmpty()
+                || foodPostDto.getPrice() == null || foodPostDto.getCategory() == null) {
+            throw new IllegalArgumentException("Food name, price, and category are required.");
+        }
+
+        Food food = convertToFoodEntity(foodPostDto);
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(restaurantId);
+        food.setRestaurant(restaurant);
+
+        Food savedFood = foodRepository.save(food);
+        return convertToFoodDto(savedFood);
+    }
+    private boolean isValidFoodPostDto(FoodPostDto foodPostDto) {
+        return foodPostDto.getName() != null && foodPostDto.getCategory() != null;
+    }
 }

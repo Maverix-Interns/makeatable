@@ -47,21 +47,6 @@ public class FoodController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping
-    public ResponseEntity<Response<FoodGetDto>> createFood(@RequestBody FoodPostDto foodPostDto) {
-
-        FoodGetDto createdFood = foodService.createFood(foodPostDto);
-
-        Response<FoodGetDto> response = Response.<FoodGetDto>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.CREATED.value())
-                .status(HttpStatus.CREATED)
-                .message("Food created successfully")
-                .data(createdFood)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Response<FoodGetDto>> updateFood(@PathVariable Long id, @RequestBody FoodPutDto foodPutDto) {
@@ -103,6 +88,32 @@ public class FoodController {
                 .data(topFoods)
                 .build();
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<Response<FoodGetDto>> addFood(@RequestBody FoodPostDto foodPostDto) {
+        Long restaurantId = getCurrentUserRestaurantId();
+
+        FoodGetDto createdFood = foodService.addFood(restaurantId, foodPostDto);
+
+        Response<FoodGetDto> response = Response.<FoodGetDto>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(201)  // HTTP 201 Created
+                .status(org.springframework.http.HttpStatus.CREATED)
+                .message("Food created successfully")
+                .data(createdFood)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    // Assume you have a method to get the current user's restaurant ID
+    private Long getCurrentUserRestaurantId() {
+        // Implement this based on your authentication mechanism
+        // For example, if you're using Spring Security, you can get it from the authenticated user's details
+        // Or if you have it stored in a session, you can retrieve it from there
+        // This is just a placeholder; replace it with your actual logic
+        return 1L;  // Replace with the actual logic to get the restaurant ID
     }
 
 }
