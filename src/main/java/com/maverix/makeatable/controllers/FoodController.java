@@ -1,4 +1,5 @@
 package com.maverix.makeatable.controllers;
+import com.maverix.makeatable.dto.Food.FoodDTO;
 import com.maverix.makeatable.dto.Food.FoodGetDto;
 import com.maverix.makeatable.dto.Food.FoodPostDto;
 import com.maverix.makeatable.dto.Food.FoodPutDto;
@@ -78,7 +79,17 @@ public class FoodController {
 
         return ResponseEntity.ok(response);
     }
-
+    @GetMapping("/{id}/food")
+    public ResponseEntity<Response<List<FoodDTO>>> getFoodForRestaurant(@PathVariable("id") Long restaurantId) {
+        List<FoodDTO> food = foodService.getFoodByRestaurantId(restaurantId);
+        Response<List<FoodDTO>> response = Response.<List<FoodDTO>>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .data(food)
+                .build();
+        return ResponseEntity.ok(response);
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<Void>> deleteFood(@PathVariable Long id) {
         foodService.deleteFood(id);

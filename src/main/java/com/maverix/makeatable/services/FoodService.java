@@ -1,4 +1,5 @@
 package com.maverix.makeatable.services;
+import com.maverix.makeatable.dto.Food.FoodDTO;
 import com.maverix.makeatable.dto.Food.FoodGetDto;
 import com.maverix.makeatable.dto.Food.FoodPostDto;
 import com.maverix.makeatable.dto.Food.FoodPutDto;
@@ -67,5 +68,24 @@ public class FoodService {
         food.setCreatedAt(LocalDateTime.now());
         food.setUpdatedAt(LocalDateTime.now());
         return food;
+    }
+    public List<FoodDTO> getFoodByRestaurantId(Long restaurantId) {
+        List<Food> foodItems = foodRepository.findByRestaurantId(restaurantId);
+        return foodItems.stream()
+                .map(this::mapFoodToFoodDTO)
+                .collect(Collectors.toList());
+    }
+
+    private FoodDTO mapFoodToFoodDTO(Food food) {
+        FoodDTO foodDTO = new FoodDTO();
+        foodDTO.setId(food.getId());
+        foodDTO.setName(food.getName());
+        foodDTO.setCategory(food.getCategory());
+        foodDTO.setSubCategory(food.getSubCategory());
+        foodDTO.setPrice(food.getPrice());
+        foodDTO.setImageUrl(food.getImageUrl());
+        foodDTO.setCalories(food.getCalories());
+        foodDTO.setDescription(food.getDescription());
+        return foodDTO;
     }
 }

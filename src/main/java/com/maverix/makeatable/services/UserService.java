@@ -68,4 +68,29 @@ public class UserService {
         user.setUpdatedAt(LocalDateTime.now());
         return user;
     }
+
+    public String getEmailByPasswordResetToken(String token) {
+        User user = userRepository.findByUsertoken(token);
+        if(user !=null){
+            return user.getEmail();
+        }
+        return null;
+    }
+
+    public void createPasswordResetTokenForUser(String email, String resetToken) {
+        User user=userRepository.findByEmail(email);
+        if(user != null){
+            user.setUsertoken(resetToken);
+            userRepository.save(user);
+        }
+    }
+
+    public void updatePassword(String email, String newPassword) {
+        User user=userRepository.findByEmail(email);
+        if(user != null){
+            user.setPassword(newPassword);
+            user.setUsertoken(null);
+            userRepository.save(user);
+        }
+    }
 }
