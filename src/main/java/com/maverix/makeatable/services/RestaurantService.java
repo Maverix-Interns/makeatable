@@ -38,17 +38,6 @@ public class RestaurantService {
         return convertToGetDto(savedRestaurant);
     }
 
-    public RestaurantGetDto updateRestaurant(Long id, RestaurantPutDto restaurantPutDto) {
-        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
-        if (optionalRestaurant.isPresent()) {
-            Restaurant existingRestaurant = optionalRestaurant.get();
-            BeanUtils.copyProperties(restaurantPutDto, existingRestaurant);
-            existingRestaurant.setUpdatedAt(LocalDateTime.now());
-            Restaurant updatedRestaurant = restaurantRepository.save(existingRestaurant);
-            return convertToGetDto(updatedRestaurant);
-        }
-        return null;
-    }
     public RestaurantGetDto approveRestaurant(Long id) {
         Restaurant restaurant = restaurantRepository.getById(id);
         restaurant.setStatus(RestStatus.APPROVED);

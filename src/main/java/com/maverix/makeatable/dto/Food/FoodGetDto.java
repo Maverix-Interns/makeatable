@@ -11,7 +11,7 @@ public class FoodGetDto {
     private String subCategory;
     private Double price;
     private Long restaurantId;
-    private Long ratingId;
+    private Double averageRating;
     private String imageUrl;
     private Long calories;
     private String description;

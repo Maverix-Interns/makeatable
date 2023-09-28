@@ -2,23 +2,32 @@ package com.maverix.makeatable.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
-
-
-@Data
 @Entity
+@Data
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Double Rating;
-    private Long rateNum;
-    @CreatedDate
-    private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+    @Column(nullable = false)
+    private Double foodRating;
+
+    @Column(nullable = false)
+    private Long foodRatingCount;
+
+    @Column(nullable = false)
+    private Double restaurantRating;
+
+    @Column(nullable = false)
+    private Long restaurantRatingCount;
+
+    @OneToOne
+    @JoinColumn(name = "food_id")
+    private Food food;
+
+    @OneToOne
+    @JoinColumn(name = "restaurant_id")
+    private Restaurant restaurant;
+
 }
