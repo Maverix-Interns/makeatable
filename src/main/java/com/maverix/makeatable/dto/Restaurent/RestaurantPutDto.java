@@ -20,5 +20,4 @@ public class RestaurantPutDto {
     private Long seatNum;
     private String description;
     private RoomType typeRoom;
-    private boolean status;
 }

@@ -3,6 +3,7 @@ package com.maverix.makeatable.dto.Restaurent;
 
 import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.enums.RoomType;
+import com.maverix.makeatable.models.User;
 import lombok.Data;
 
 import java.time.LocalTime;
@@ -17,12 +18,13 @@ public class RestaurantGetDto {
     private String email;
     private String imageUrl;
     private Long userId;
+    private String userName;
     private LocalTime openTime;
     private LocalTime closeTime;
     private FoodCategory foodType;
     private Long seatNum;
     private String description;
-    private Long ratingId;
+    private Double rating;
     private RoomType typeRoom;
     private boolean status;
     private LocalDateTime createdAt;

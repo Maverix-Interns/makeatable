@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,13 +24,13 @@ public class Food {
     private String subCategory;
 
     private Double price;
+    @OneToMany(mappedBy = "food")
+    private List<FoodRating> ratings;
+
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
-
-    @OneToOne(mappedBy = "food")
-    private Rating rating;
 
     private String imageUrl;
 
@@ -42,4 +43,16 @@ public class Food {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    public Double getAverageRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalRating = 0.0;
+        for (FoodRating rating : ratings) {
+            totalRating += rating.getRating();
+        }
+
+        return totalRating / ratings.size();
+    }
 }

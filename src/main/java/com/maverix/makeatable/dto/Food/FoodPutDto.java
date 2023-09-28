@@ -10,7 +10,6 @@ public class FoodPutDto {
     private String subCategory;
     private Double price;
     private Long restaurantId;
-    private Long ratingId;
     private String imageUrl;
     private Long calories;
     private String description;

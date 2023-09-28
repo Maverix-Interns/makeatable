@@ -57,7 +57,9 @@ public class FoodService {
 
     private FoodGetDto convertToFoodDto(Food food) {
         FoodGetDto foodDto = new FoodGetDto();
+        foodDto.setRating(food.getAverageRating());
         BeanUtils.copyProperties(food, foodDto);
+
         return foodDto;
     }
 

@@ -11,6 +11,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @Entity
@@ -28,7 +30,8 @@ public class Restaurant {
     private String email;
 
     private String imageUrl;
-
+    @OneToMany(mappedBy = "restaurant")
+    private List<RestaurantRating> ratings;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -44,9 +47,6 @@ public class Restaurant {
 
     private String description;
 
-    @OneToOne(mappedBy = "restaurant")
-    private Rating rating;
-
     @Enumerated(EnumType.STRING)
     private RoomType typeRoom;
 
@@ -57,6 +57,18 @@ public class Restaurant {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+    public Double getAverageRating() {
+        if (ratings == null || ratings.isEmpty()) {
+            return 0.0;
+        }
+
+        double totalRating = 0.0;
+        for (RestaurantRating rating : ratings) {
+            totalRating += rating.getRating();
+        }
+
+        return totalRating / ratings.size();
+    }
 
 
 }

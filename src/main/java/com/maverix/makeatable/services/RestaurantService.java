@@ -3,6 +3,7 @@ import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
 import com.maverix.makeatable.enums.RestStatus;
+import com.maverix.makeatable.exceptions.RestaurantNotFoundException;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.RestaurantRepository;
 import org.springframework.beans.BeanUtils;
@@ -63,6 +64,9 @@ public class RestaurantService {
 
     private RestaurantGetDto convertToGetDto(Restaurant restaurant) {
         RestaurantGetDto restaurantGetDto = new RestaurantGetDto();
+        restaurantGetDto.setRating(restaurant.getAverageRating());
+        restaurantGetDto.setUserId(restaurant.getUser().getId());
+        restaurantGetDto.setUserName(restaurant.getUser().getFullName());
         BeanUtils.copyProperties(restaurant, restaurantGetDto);
         return restaurantGetDto;
     }
@@ -77,4 +81,33 @@ public class RestaurantService {
     }
 
 
+    public RestaurantGetDto updateRestaurant(Long id, RestaurantPutDto restaurantPutDto) {
+        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(id);
+
+        if (optionalRestaurant.isPresent()) {
+            Restaurant existingRestaurant = optionalRestaurant.get();
+            existingRestaurant.setFullName(restaurantPutDto.getFullName());
+            existingRestaurant.setMobileNum(restaurantPutDto.getMobileNum());
+            existingRestaurant.setLocation(restaurantPutDto.getLocation());
+            existingRestaurant.setEmail(restaurantPutDto.getEmail());
+            existingRestaurant.setImageUrl(restaurantPutDto.getImageUrl());
+            existingRestaurant.setOpenTime(restaurantPutDto.getOpenTime());
+            existingRestaurant.setCloseTime(restaurantPutDto.getCloseTime());
+            existingRestaurant.setFoodType(restaurantPutDto.getFoodType());
+            existingRestaurant.setSeatNum(restaurantPutDto.getSeatNum());
+            existingRestaurant.setDescription(restaurantPutDto.getDescription());
+            existingRestaurant.setTypeRoom(restaurantPutDto.getTypeRoom());
+
+            Restaurant updatedRestaurant = restaurantRepository.save(existingRestaurant);
+
+
+            return convertToGetDto(updatedRestaurant);
+        } else {
+            throw new RestaurantNotFoundException("Restaurant not found with ID: " + id);
+        }
+    }
+
+    public Restaurant getfullRestaurantById(Long restaurantId) {
+        return restaurantRepository.getById(restaurantId);
+    }
 }
