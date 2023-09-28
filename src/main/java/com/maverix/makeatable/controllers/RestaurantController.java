@@ -1,5 +1,7 @@
 package com.maverix.makeatable.controllers;
-import com.maverix.makeatable.dto.Restaurent.*;
+import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
+import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
+import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
 import com.maverix.makeatable.services.RestaurantService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
@@ -48,6 +50,21 @@ public class RestaurantController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Response<RestaurantGetDto>> updateRestaurant(@PathVariable Long id, @RequestBody RestaurantPutDto restaurantPutDto) {
+
+        RestaurantGetDto updatedRestaurant = restaurantService.updateRestaurant(id, restaurantPutDto);
+
+        Response<RestaurantGetDto> response = Response.<RestaurantGetDto>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message("Restaurant updated successfully")
+                .data(updatedRestaurant)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 
 
     @DeleteMapping("/{id}")
@@ -62,31 +79,5 @@ public class RestaurantController {
                 .build();
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-    }
-    @GetMapping("/{name}")
-    public ResponseEntity<Response<RestaurantDetailsDTO>> getRestaurantDetails(@PathVariable("name") String name) {
-        RestaurantDetailsDTO restaurantDetails = restaurantService.getRestaurantDetailsByName(name);
-        Response<RestaurantDetailsDTO> response = Response.<RestaurantDetailsDTO>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .data(restaurantDetails)
-                .build();
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Response<String>> updateRestaurant(
-            @PathVariable("id") Long restaurantId,
-            @RequestBody UpdateRestaurantDTO updateRestaurantDTO
-    ) {
-        restaurantService.updateRestaurant(restaurantId, updateRestaurantDTO);
-        Response<String> response = Response.<String>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Restaurant updated successfully.")
-                .build();
-        return ResponseEntity.ok(response);
     }
 }
