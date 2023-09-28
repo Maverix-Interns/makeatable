@@ -1,71 +1,85 @@
 package com.maverix.makeatable.services;
-import com.maverix.makeatable.dto.Rating.RatingGetDto;
-import com.maverix.makeatable.dto.Rating.RatingPostDto;
-import com.maverix.makeatable.dto.Rating.RatingPutDto;
-import com.maverix.makeatable.models.Rating;
-import com.maverix.makeatable.repositories.RatingRepository;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.maverix.makeatable.models.Food;
+import com.maverix.makeatable.models.Rating;
+import com.maverix.makeatable.models.Restaurant;
+import com.maverix.makeatable.repositories.FoodRepository;
+import com.maverix.makeatable.repositories.RatingRepository;
+import com.maverix.makeatable.repositories.RestaurantRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class RatingService {
 
+
     private final RatingRepository ratingRepository;
+    private final FoodRepository foodRepository;
+    private final RestaurantRepository restaurantRepository;
 
-    public RatingService(RatingRepository ratingRepository) {
+    public RatingService(RatingRepository ratingRepository, FoodRepository foodRepository, RestaurantRepository restaurantRepository) {
         this.ratingRepository = ratingRepository;
+        this.foodRepository = foodRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
-    public List<RatingGetDto> getAllRatings() {
-        List<Rating> ratings = ratingRepository.findAll();
-        return ratings.stream()
-                .map(this::convertToGetDto)
-                .collect(Collectors.toList());
-    }
-
-    public RatingGetDto getRatingById(Long id) {
-        Optional<Rating> optionalRating = ratingRepository.findById(id);
-        return optionalRating.map(this::convertToGetDto).orElse(null);
-    }
-
-    public RatingGetDto createRating(RatingPostDto ratingPostDto) {
-        Rating rating = convertToEntity(ratingPostDto);
-        Rating savedRating = ratingRepository.save(rating);
-        return convertToGetDto(savedRating);
-    }
-
-    public RatingGetDto updateRating(Long id, RatingPutDto ratingPutDto) {
-        Optional<Rating> optionalRating = ratingRepository.findById(id);
-        if (optionalRating.isPresent()) {
-            Rating existingRating = optionalRating.get();
-            BeanUtils.copyProperties(ratingPutDto, existingRating);
-            existingRating.setUpdatedAt(LocalDateTime.now());
-            Rating updatedRating = ratingRepository.save(existingRating);
-            return convertToGetDto(updatedRating);
+    public Rating rateFood(Long foodId, Double rating) {
+        Food food = foodRepository.findById(foodId).orElse(null);
+        if (food == null) {
+            // Handle not found scenario
+            return null;
         }
-        return null;
+
+        Rating foodRating = food.getRating();
+        if (foodRating == null) {
+            foodRating = new Rating();
+            foodRating.setFood(food);
+        }
+
+        updateRating(foodRating, rating);
+        return ratingRepository.save(foodRating);
     }
 
-    public void deleteRating(Long id) {
-        ratingRepository.deleteById(id);
+    public Rating rateRestaurant(Long restaurantId, Double rating) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElse(null);
+        if (restaurant == null) {
+            // Handle not found scenario
+            return null;
+        }
+
+        Rating restaurantRating = restaurant.getRating();
+        if (restaurantRating == null) {
+            restaurantRating = new Rating();
+            restaurantRating.setRestaurant(restaurant);
+        }
+
+        updateRating(restaurantRating, rating);
+        return ratingRepository.save(restaurantRating);
     }
 
-    private RatingGetDto convertToGetDto(Rating rating) {
-        RatingGetDto ratingGetDto = new RatingGetDto();
-        BeanUtils.copyProperties(rating, ratingGetDto);
-        return ratingGetDto;
+    public Rating getFoodRating(Long foodId) {
+        Food food = foodRepository.findById(foodId).orElse(null);
+        if (food == null) {
+            // Handle not found scenario
+            return null;
+        }
+
+        return food.getRating();
     }
 
-    private Rating convertToEntity(RatingPostDto ratingPostDto) {
-        Rating rating = new Rating();
-        BeanUtils.copyProperties(ratingPostDto, rating);
-        rating.setCreatedAt(LocalDateTime.now());
-        rating.setUpdatedAt(LocalDateTime.now());
-        return rating;
+    public Rating getRestaurantRating(Long restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElse(null);
+        if (restaurant == null) {
+            // Handle not found scenario
+            return null;
+        }
+
+        return restaurant.getRating();
+    }
+
+    private void updateRating(Rating rating, Double newRating) {
+        double totalRating = rating.getFoodRating() * rating.getFoodRatingCount() + newRating;
+        long newRatingCount = rating.getFoodRatingCount() + 1;
+        rating.setFoodRating(totalRating / newRatingCount);
+        rating.setFoodRatingCount(newRatingCount);
     }
 }

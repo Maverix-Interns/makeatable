@@ -44,8 +44,7 @@ public class Restaurant {
 
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "rating_id")
+    @OneToOne(mappedBy = "restaurant")
     private Rating rating;
 
     @Enumerated(EnumType.STRING)

@@ -28,8 +28,7 @@ public class Food {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    @ManyToOne
-    @JoinColumn(name = "rating_id")
+    @OneToOne(mappedBy = "food")
     private Rating rating;
 
     private String imageUrl;
