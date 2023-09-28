@@ -106,6 +106,20 @@ public class RestaurantService {
             throw new RestaurantNotFoundException("Restaurant not found with ID: " + id);
         }
     }
+    public List<RestaurantGetDto> getTop5RatedRestaurants() {
+        List<Restaurant> top5Restaurants = restaurantRepository.findTop5ByOrderByAverageRatingDesc();
+        return top5Restaurants.stream()
+                .map(this::convertToRestaurantDto)
+                .collect(Collectors.toList());
+    }
+
+    private RestaurantGetDto convertToRestaurantDto(Restaurant restaurant) {
+        RestaurantGetDto restaurantDto = new RestaurantGetDto();
+        restaurantDto.setRating(restaurant.getAverageRating());
+        BeanUtils.copyProperties(restaurant, restaurantDto);
+
+        return restaurantDto;
+    }
 
     public Restaurant getfullRestaurantById(Long restaurantId) {
         return restaurantRepository.getById(restaurantId);

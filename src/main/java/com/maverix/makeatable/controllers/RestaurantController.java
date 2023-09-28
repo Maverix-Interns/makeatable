@@ -80,4 +80,18 @@ public class RestaurantController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
+    @GetMapping("/top-rated")
+    public ResponseEntity<Response<List<RestaurantGetDto>>> getTop5RatedRestaurants() {
+        List<RestaurantGetDto> topRatedRestaurants = restaurantService.getTop5RatedRestaurants();
+
+        Response<List<RestaurantGetDto>> response = Response.<List<RestaurantGetDto>>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(200)
+                .status(org.springframework.http.HttpStatus.OK)
+                .message("Top 5 rated restaurants fetched successfully")
+                .data(topRatedRestaurants)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
 }
