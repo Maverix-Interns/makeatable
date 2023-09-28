@@ -1,10 +1,9 @@
 package com.maverix.makeatable.services;
-import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
-import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
-import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
+import com.maverix.makeatable.dto.Restaurent.*;
 import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.RestaurantRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -85,6 +84,36 @@ public class RestaurantService {
         restaurant.setCreatedAt(LocalDateTime.now());
         restaurant.setUpdatedAt(LocalDateTime.now());
         return restaurant;
+    }
+    public RestaurantDetailsDTO getRestaurantDetailsByName(String name) {
+        Restaurant restaurant = restaurantRepository.findByFullName(name);
+        if (restaurant == null) {
+            throw new EntityNotFoundException("Restaurant not found with name: " + name);
+        }
+
+        RestaurantDetailsDTO restaurantDetailsDTO = new RestaurantDetailsDTO();
+        restaurantDetailsDTO.setName(restaurant.getFullName());
+        restaurantDetailsDTO.setLocation(restaurant.getLocation());
+        restaurantDetailsDTO.setPhoneNumber(restaurant.getMobileNum());
+
+        return restaurantDetailsDTO;
+    }
+
+    // Function to update restaurant name and location
+    public void updateRestaurant(Long restaurantId, UpdateRestaurantDTO updateRestaurantDTO) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new EntityNotFoundException("Restaurant not found with id: " + restaurantId));
+
+        if (updateRestaurantDTO.getName() != null) {
+            restaurant.setFullName(updateRestaurantDTO.getName());
+        }
+
+        if (updateRestaurantDTO.getLocation() != null) {
+            restaurant.setLocation(updateRestaurantDTO.getLocation());
+        }
+
+        // Save the updated restaurant
+        restaurantRepository.save(restaurant);
     }
 
 
