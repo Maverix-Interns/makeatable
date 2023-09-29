@@ -7,7 +7,6 @@ import com.maverix.makeatable.repositories.RestaurantRepository;
 import com.maverix.makeatable.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -43,7 +42,6 @@ public class RestaurantProfileService {
         restaurant.setFoodType(managerDto.getFoodType());
         restaurant.setDescription(managerDto.getDescription());
         restaurant.setTypeRoom(managerDto.getTypeRoom());
-
         restaurantRepository.save(restaurant);
     }
 }
