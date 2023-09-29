@@ -26,7 +26,7 @@ public class Restaurant {
     private Long mobileNum;
 
     private String location;
-
+    @Column(unique=true)
     private String email;
 
     private String imageUrl;

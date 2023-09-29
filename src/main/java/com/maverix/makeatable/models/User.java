@@ -1,6 +1,7 @@
 package com.maverix.makeatable.models;
 
 import com.maverix.makeatable.enums.FoodCategory;
+import com.maverix.makeatable.enums.UserStatus;
 import com.maverix.makeatable.enums.UserType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class User {
 
     private String fullName;
 
+    @Column(unique=true)
     private String email;
 
     private String password;
@@ -29,6 +31,9 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus;
 
     @CreatedDate
     private LocalDateTime createdAt;
