@@ -1,6 +1,7 @@
 package com.maverix.makeatable.services;
 
 import com.maverix.makeatable.dto.Orders.*;
+import com.maverix.makeatable.exceptions.OrderNotFoundException;
 import com.maverix.makeatable.models.Orders;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.models.User;
@@ -127,4 +128,24 @@ public class OrdersService {
         BeanUtils.copyProperties(ordersPostDto, orders);
         return orders;
     }
+
+    public boolean rescheduleOrder(Long orderId, OrderRescheduleDto rescheduleDto) {
+        Optional<Orders> optionalOrder = ordersRepository.findById(orderId);
+
+        if (optionalOrder.isPresent()) {
+            Orders order = optionalOrder.get();
+            LocalDateTime rescheduledDateTime = rescheduleDto.getRescheduledDateTime();
+            if (rescheduledDateTime != null) {
+                order.setDateTime(rescheduledDateTime);
+                ordersRepository.save(order);
+                System.out.println("Order with ID " + orderId + " rescheduled to: " + rescheduledDateTime);
+                return true;
+            } else {
+                throw new IllegalArgumentException("Rescheduled date and time cannot be null.");
+            }
+        } else {
+            throw new OrderNotFoundException("Order not found for ID: " + orderId);
+        }
+    }
+
 }
