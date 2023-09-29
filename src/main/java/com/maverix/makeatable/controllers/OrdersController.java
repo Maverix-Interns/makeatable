@@ -93,6 +93,22 @@ public class OrdersController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/{orderId}/reschedule")
+    public ResponseEntity<Response<String>> rescheduleOrder(@PathVariable Long orderId, @RequestBody OrderRescheduleDto rescheduleDto) {
+        boolean isDataChanged = ordersService.rescheduleOrder(orderId, rescheduleDto);
+
+        String successMessage = isDataChanged ? "Order rescheduled successfully." : "No changes made to the order.";
+
+        Response<String> response = Response.<String>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message(successMessage)
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Response<Void>> deleteOrder(@PathVariable Long id) {
         ordersService.deleteOrder(id);

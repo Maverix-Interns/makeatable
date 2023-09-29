@@ -1,7 +1,7 @@
 package com.maverix.makeatable.controllers;
 
 import com.maverix.makeatable.dto.User.UserGetDto;
-import com.maverix.makeatable.dto.User.UserProfileUpdateDto;
+import com.maverix.makeatable.dto.User.CustomerProfileUpdateDto;
 import com.maverix.makeatable.services.CustomerProfileService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class CustomerProfileController {
     }
 
     @PutMapping("/{email}")
-    public ResponseEntity<Response<String>> updateUserProfile(@PathVariable String email, @RequestBody UserProfileUpdateDto updateDto) {
+    public ResponseEntity<Response<String>> updateUserProfile(@PathVariable String email, @RequestBody CustomerProfileUpdateDto updateDto) {
         customerProfileService.updateUserProfile(email, updateDto);
 
         Response<String> response = Response.<String>builder()

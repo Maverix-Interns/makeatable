@@ -2,7 +2,6 @@ package com.maverix.makeatable.services;
 import com.maverix.makeatable.dto.Food.FoodGetDto;
 import com.maverix.makeatable.dto.Food.FoodPostDto;
 import com.maverix.makeatable.dto.Food.FoodPutDto;
-import com.maverix.makeatable.exceptions.RestaurantNotFoundException;
 import com.maverix.makeatable.models.Food;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.FoodRepository;
@@ -21,9 +20,11 @@ public class FoodService {
     private final FoodRepository foodRepository;
     private final RestaurantRepository restaurantRepository;
 
+
     public FoodService(FoodRepository foodRepository, RestaurantRepository restaurantRepository) {
         this.foodRepository = foodRepository;
         this.restaurantRepository = restaurantRepository;
+
     }
 
     public List<FoodGetDto> getAllFoods() {

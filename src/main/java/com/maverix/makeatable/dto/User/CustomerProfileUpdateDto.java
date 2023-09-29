@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 
-public class UserProfileUpdateDto {
+public class CustomerProfileUpdateDto {
 
     private String fullName;
     private String preference;

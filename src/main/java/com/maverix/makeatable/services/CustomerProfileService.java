@@ -1,7 +1,7 @@
 package com.maverix.makeatable.services;
 
 import com.maverix.makeatable.dto.User.UserGetDto;
-import com.maverix.makeatable.dto.User.UserProfileUpdateDto;
+import com.maverix.makeatable.dto.User.CustomerProfileUpdateDto;
 import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.enums.UserType;
 import com.maverix.makeatable.exceptions.UserNotFoundException;
@@ -34,7 +34,7 @@ public class CustomerProfileService {
         }
     }
 
-    public void updateUserProfile(String email, UserProfileUpdateDto updateDto) {
+    public void updateUserProfile(String email, CustomerProfileUpdateDto updateDto) {
         User user = userRepository.findByEmail(email);
         if (user != null && user.getUserType() == UserType.CUSTOMER) {
             user.setFullName(updateDto.getFullName());

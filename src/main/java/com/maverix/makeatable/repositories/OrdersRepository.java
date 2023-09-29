@@ -10,4 +10,6 @@ public interface OrdersRepository extends JpaRepository<Orders,Long> {
     Optional<Orders> findTopByCreatedByUserIdOrderByDateTimeDesc(Long userId);
 
     List<Orders> findByRestaurantId(Long restaurantId);
+
+    List<Orders> findTop10ByOrderByDateTimeDesc();
 }
