@@ -29,7 +29,7 @@ public class ForgotPasswordController {
 
         userService.createPasswordResetTokenForUser(email, resetToken);
 
-        // Send an email to the user with the reset link
+        // todo Send an email to the user with the reset link
         String resetLink = "https://yourwebsite.com/reset-password?token=" + resetToken;
 
 

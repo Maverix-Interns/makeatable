@@ -28,7 +28,7 @@ public class AuthenticationController {
         User registeredUser = authService.registerUser(registrationDto);
         VerificationToken verificationToken = verificationTokenService.generateVerificationToken(registeredUser);
 
-        // Send verification email (implement this part based on your requirements)
+        // TODO Send verification email (implement this part based on your requirements)
 
         Response<String> response = Response.<String>builder()
                 .timeStamp(LocalDateTime.now())
