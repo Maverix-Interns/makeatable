@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("admin")
+@RequestMapping("/admin")
 public class AdminController {
     private final RestaurantService restaurantService;
 

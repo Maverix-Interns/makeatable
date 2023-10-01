@@ -10,7 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
-@Service
+//TODO
 public class AuthService {
 
     private final UserRepository userRepository;

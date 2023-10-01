@@ -78,7 +78,7 @@ public class UserService {
     }
 
     public void createPasswordResetTokenForUser(String email, String resetToken) {
-        User user=userRepository.findByEmail(email);
+        User user=userRepository.getByEmail(email);
         if(user != null){
             user.setUsertoken(resetToken);
             userRepository.save(user);
@@ -86,11 +86,13 @@ public class UserService {
     }
 
     public void updatePassword(String email, String newPassword) {
-        User user=userRepository.findByEmail(email);
+        User user=userRepository.getByEmail(email);
         if(user != null){
             user.setPassword(newPassword);
             user.setUsertoken(null);
             userRepository.save(user);
         }
     }
+
+
 }

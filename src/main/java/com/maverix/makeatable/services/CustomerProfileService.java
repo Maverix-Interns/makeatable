@@ -35,7 +35,7 @@ public class CustomerProfileService {
     }
 
     public void updateUserProfile(String email, CustomerProfileUpdateDto updateDto) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.getByEmail(email);
         if (user != null && user.getUserType() == UserType.CUSTOMER) {
             user.setFullName(updateDto.getFullName());
             user.setPreference(FoodCategory.valueOf(updateDto.getPreference()));
