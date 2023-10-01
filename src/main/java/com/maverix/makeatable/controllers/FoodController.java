@@ -6,6 +6,7 @@ import com.maverix.makeatable.services.FoodService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,7 +21,6 @@ public class FoodController {
     public FoodController(FoodService foodService) {
         this.foodService = foodService;
     }
-
     @GetMapping
     public ResponseEntity<Response<List<FoodGetDto>>> getAllFoods() {
         List<FoodGetDto> foods = foodService.getAllFoods();
