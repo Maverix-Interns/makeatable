@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@RestController
-@RequestMapping("/api/auth")
+//TODO
 public class AuthenticationController {
 
     private final AuthService authService;
