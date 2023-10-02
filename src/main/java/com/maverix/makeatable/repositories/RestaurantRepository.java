@@ -14,4 +14,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant,Long> {
     List<Restaurant> findTop5ByOrderByAverageRatingDesc();
 
     Optional<Restaurant> findByUser_Id(Long userId);
+
+    Restaurant findByUserId(Long userId);
 }

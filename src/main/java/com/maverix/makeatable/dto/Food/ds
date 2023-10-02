@@ -1,0 +1,11 @@
+{
+  "name": "Sample Food",
+  "category": "MAIN_COURSE",
+  "subCategory": "Pasta",
+  "price": 10.99,
+  "restaurantId": 3,
+  "imageUrl": "https://example.com/image.jpg",
+  "calories": 450,
+  "description": "Delicious pasta dish"
+}
+eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIxNyIsInN1YiI6IkVSRkFOQGV4YW1wbGUuY29tIiwiaWF0IjoxNjk2MjM4NTA1LCJleHAiOjE2OTYzMjQ5MDV9.m9MMwe4gTLCYHZqX_IN1UlrFVLx9Ox8Y0AIZhl-mQ14
