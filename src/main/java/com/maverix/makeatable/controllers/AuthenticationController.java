@@ -28,7 +28,7 @@ public class AuthenticationController {
         VerificationToken verificationToken = verificationTokenService.generateVerificationToken(registeredUser);
 
         // TODO Send verification email (implement this part based on your requirements)
-
+      // todo migrate to security package
         Response<String> response = Response.<String>builder()
                 .timeStamp(LocalDateTime.now())
                 .statusCode(HttpStatus.OK.value())
@@ -43,7 +43,7 @@ public class AuthenticationController {
     @GetMapping("/verify")
     public ResponseEntity<Response<String>> verifyUser(@RequestParam("token") String token) {
         User user = verificationTokenService.verifyUser(token);
-
+//todo migrate to security package
 
         Response<String> response = Response.<String>builder()
                 .timeStamp(LocalDateTime.now())

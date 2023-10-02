@@ -2,6 +2,8 @@ package com.maverix.makeatable.config.Security;
 import com.maverix.makeatable.config.Security.Dto.AuthenticationRequest;
 import com.maverix.makeatable.config.Security.Dto.AuthenticationResponse;
 import com.maverix.makeatable.config.Security.Dto.RegisterRequest;
+import com.maverix.makeatable.util.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @RestController
@@ -9,9 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 public class AuthController {
     private final AuthenticationService authenticationService;
+    private final HttpServletRequest request;
+    private final JwtUtils jwtUtils;
 
-    public AuthController(AuthenticationService authenticationService) {
+    public AuthController(AuthenticationService authenticationService, HttpServletRequest request, JwtUtils jwtUtils) {
         this.authenticationService = authenticationService;
+        this.request = request;
+        this.jwtUtils = jwtUtils;
     }
 
     @PostMapping("/register")
@@ -24,6 +30,5 @@ public class AuthController {
     {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
-
 
 }

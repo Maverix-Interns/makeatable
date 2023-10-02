@@ -1,4 +1,5 @@
 package com.maverix.makeatable.services;
+import com.maverix.makeatable.config.Security.JwtService;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
@@ -6,7 +7,13 @@ import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.exceptions.RestaurantNotFoundException;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.RestaurantRepository;
+import com.maverix.makeatable.repositories.UserRepository;
+import com.maverix.makeatable.util.JwtUtils;
+import io.jsonwebtoken.Claims;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,9 +24,26 @@ import java.util.stream.Collectors;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
-
-    public RestaurantService(RestaurantRepository restaurantRepository) {
+    private final UserRepository userRepository;
+    private final HttpServletRequest request;
+    private final JwtUtils jwtUtils;
+    private final JwtService jwtService;
+    public RestaurantService(RestaurantRepository restaurantRepository, UserRepository userRepository, HttpServletRequest request, JwtUtils jwtUtils, JwtService jwtService) {
         this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
+        this.request = request;
+        this.jwtUtils = jwtUtils;
+        this.jwtService = jwtService;
+    }
+
+    public Long getCurrentUserRestaurantId(String token) {
+        Long userId= Long.valueOf(jwtService.extractId(token));
+        Restaurant restaurant = restaurantRepository.findByUserId(userId);
+        if (restaurant != null) {
+            return restaurant.getId();
+        }
+        return null;
+
     }
 
     public List<RestaurantGetDto> getAllRestaurants() {
@@ -124,4 +148,15 @@ public class RestaurantService {
     public Restaurant getfullRestaurantById(Long restaurantId) {
         return restaurantRepository.getById(restaurantId);
     }
+
+
+    public boolean isManagerOfRestaurant(Long restaurantId, Authentication authentication) {
+        String username = authentication.getName();
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElse(null);
+        if (restaurant != null) {
+            return restaurant.getUser().getEmail().equals(username);
+        }
+        return false;
+    }
+
 }

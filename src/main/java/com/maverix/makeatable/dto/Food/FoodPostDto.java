@@ -10,7 +10,6 @@ public class FoodPostDto {
     private FoodCategory category;
     private String subCategory;
     private Double price;
-    private Long restaurantId;
     private String imageUrl;
     private Long calories;
     private String description;

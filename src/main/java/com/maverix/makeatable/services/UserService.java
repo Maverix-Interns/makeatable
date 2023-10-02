@@ -27,7 +27,12 @@ public class UserService {
                 .map(this::convertToGetDto)
                 .collect(Collectors.toList());
     }
-
+    public String getIdfromUsername(String username) {
+        Long userId = userRepository.findByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User not found for username: " + username))
+                .getId();
+        return userId.toString();
+    }
     public UserGetDto getUserById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser.map(this::convertToGetDto).orElse(null);

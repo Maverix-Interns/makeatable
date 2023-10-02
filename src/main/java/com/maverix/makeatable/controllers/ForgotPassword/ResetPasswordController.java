@@ -4,16 +4,18 @@ import com.maverix.makeatable.dto.User.ResetPasswordRequestDTO;
 import com.maverix.makeatable.services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/reset-password")
 public class ResetPasswordController {
 
-
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    public ResetPasswordController(UserService userService) {
+    public ResetPasswordController(PasswordEncoder passwordEncoder, UserService userService) {
+        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
     }
 
@@ -41,7 +43,7 @@ public class ResetPasswordController {
         }
 
 
-        userService.updatePassword(email, requestDTO.getNewPassword());
+        userService.updatePassword(email, passwordEncoder.encode(requestDTO.getNewPassword()));
 
         return ResponseEntity.ok("Password reset successfully.");
     }
