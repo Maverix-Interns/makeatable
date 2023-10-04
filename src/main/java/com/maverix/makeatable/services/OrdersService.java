@@ -29,10 +29,7 @@ public class OrdersService {
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
     }
-    public boolean isOrderBelongsToUser(Long orderId, Long userId) {
-        Optional<Orders> optionalOrder = ordersRepository.findById(orderId);
-        return optionalOrder.isPresent() && optionalOrder.get().getCreatedByUser().getId().equals(userId);
-    }
+
     public List<OrdersGetDto> getAllOrders() {
         List<Orders> ordersList = ordersRepository.findAll();
         return ordersList.stream()
@@ -150,6 +147,5 @@ public class OrdersService {
             throw new OrderNotFoundException("Order not found for ID: " + orderId);
         }
     }
-
 
 }

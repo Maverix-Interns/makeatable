@@ -29,13 +29,8 @@ public class JwtService {
     }
 
     public String extractId(String token) {
-        if(!isTokenExpired(token)) {
-            return extractClaim(token, Claims::getId);
-        }
-        else {
-            return null;
-        }
-        }
+        return extractClaim(token, Claims::getId);
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

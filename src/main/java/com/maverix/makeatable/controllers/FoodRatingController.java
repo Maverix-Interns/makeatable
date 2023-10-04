@@ -20,7 +20,7 @@ public class FoodRatingController {
     public FoodRatingController(FoodRatingService foodRatingService) {
         this.foodRatingService = foodRatingService;
     }
-    @PreAuthorize("isAuthenticated()")
+
     @PostMapping("/submit-rating")
     public ResponseEntity<FoodRating> submitRating(
             @RequestParam Long food_id,
