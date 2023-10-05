@@ -1,10 +1,16 @@
 package com.maverix.makeatable.controllers;
 
+import com.maverix.makeatable.config.Security.JwtService;
 import com.maverix.makeatable.dto.Orders.*;
 import com.maverix.makeatable.services.OrdersService;
+import com.maverix.makeatable.services.RestaurantService;
+import com.maverix.makeatable.util.JwtUtils;
 import com.maverix.makeatable.util.Response;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -14,22 +20,42 @@ import java.util.List;
 @RequestMapping("api/orders")
 public class OrdersController {
 
+    private final RestaurantService restaurantService;
     private final OrdersService ordersService;
+    private final HttpServletRequest request;
+    private final JwtUtils jwtUtils;
 
-    public OrdersController(OrdersService ordersService) {
+    private final JwtService jwtService;
+
+    public OrdersController(RestaurantService restaurantService, OrdersService ordersService, HttpServletRequest request, JwtUtils jwtUtils, JwtService jwtService) {
+        this.restaurantService = restaurantService;
         this.ordersService = ordersService;
+        this.request = request;
+        this.jwtUtils = jwtUtils;
+        this.jwtService = jwtService;
     }
-
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @GetMapping("restaurant/{restaurantId}")
     public Response<List<OrderDetailsDTO>> getOrdersForRestaurant(@PathVariable Long restaurantId) {
-        List<OrderDetailsDTO> orderDetailsDTOList = ordersService.getOrderDetailsByRestaurantId(restaurantId);
-        return Response.<List<OrderDetailsDTO>>builder()
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Order details fetched successfully")
-                .data(orderDetailsDTOList)
-                .timeStamp(LocalDateTime.now())
-                .build();
+        Long jwtUserId = Long.valueOf(jwtService.extractId(jwtUtils.getJwtFromRequest(request)));
+        if(restaurantService.isManagerOfRestaurantbyId(restaurantId,jwtUserId)) {
+            List<OrderDetailsDTO> orderDetailsDTOList = ordersService.getOrderDetailsByRestaurantId(restaurantId);
+            return Response.<List<OrderDetailsDTO>>builder()
+                    .statusCode(HttpStatus.OK.value())
+                    .status(HttpStatus.OK)
+                    .message("Order details fetched successfully")
+                    .data(orderDetailsDTOList)
+                    .timeStamp(LocalDateTime.now())
+                    .build();
+        }
+        else {
+            return Response.<List<OrderDetailsDTO>>builder()
+                    .statusCode(HttpStatus.FORBIDDEN.value())
+                    .status(HttpStatus.FORBIDDEN)
+                    .message("You are No this Restaurant's Manager")
+                    .timeStamp(LocalDateTime.now())
+                    .build();
+        }
     }
     @GetMapping
     public ResponseEntity<Response<List<OrdersGetDto>>> getAllOrders() {
