@@ -9,11 +9,9 @@ import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.repositories.RestaurantRepository;
 import com.maverix.makeatable.repositories.UserRepository;
 import com.maverix.makeatable.util.JwtUtils;
-import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -159,4 +157,11 @@ public class RestaurantService {
         return false;
     }
 
+    public boolean isManagerOfRestaurantbyId(Long restaurantId, Long jwtUserId) {
+        Restaurant restaurant=restaurantRepository.findById(restaurantId).orElse(null);
+        if(restaurant !=null){
+            return restaurant.getUser().getId().equals(jwtUserId);
+        }
+        return false;
+    }
 }
