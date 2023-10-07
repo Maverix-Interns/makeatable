@@ -2,11 +2,15 @@ package com.maverix.makeatable.controllers;
 
 import com.maverix.makeatable.dto.Favourite.FavouriteGetDto;
 import com.maverix.makeatable.dto.Favourite.FavouritePostDto;
+import com.maverix.makeatable.exceptions.NoFavoritesFoundException;
 import com.maverix.makeatable.services.FavouriteService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @RestController
@@ -30,6 +34,31 @@ public class FavouriteController {
                 .data(favourite)
                 .build();
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Response<List<FavouriteGetDto>>> getFavoritesByUserId(@PathVariable Long userId) {
+        try {
+            List<FavouriteGetDto> favorites = favouriteService.getFavoritesByUserId(userId);
+
+            Response<List<FavouriteGetDto>> response = Response.<List<FavouriteGetDto>>builder()
+                    .timeStamp(LocalDateTime.now())
+                    .statusCode(HttpStatus.OK.value())
+                    .status(HttpStatus.OK)
+                    .message("Favorites retrieved successfully")
+                    .data(favorites)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (NoFavoritesFoundException e) {
+            Response<List<FavouriteGetDto>> response = Response.<List<FavouriteGetDto>>builder()
+                    .timeStamp(LocalDateTime.now())
+                    .statusCode(HttpStatus.NOT_FOUND.value())
+                    .status(HttpStatus.NOT_FOUND)
+                    .message("No favorites found for the given user ID.")
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
     }
 
     @PostMapping
