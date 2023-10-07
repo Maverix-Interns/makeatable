@@ -1,6 +1,7 @@
 package com.maverix.makeatable.services;
 import com.maverix.makeatable.dto.Favourite.FavouriteGetDto;
 import com.maverix.makeatable.dto.Favourite.FavouritePostDto;
+import com.maverix.makeatable.exceptions.NoFavoritesFoundException;
 import com.maverix.makeatable.models.Favourite;
 import com.maverix.makeatable.repositories.FavouriteRepository;
 import org.springframework.beans.BeanUtils;
@@ -47,6 +48,19 @@ public class FavouriteService {
         BeanUtils.copyProperties(favourite, favouritegetDto);
         return favouritegetDto;
     }
+
+    public List<FavouriteGetDto> getFavoritesByUserId(Long userId) {
+        List<Favourite> favourites = favouriteRepository.findByCreatedByUser_Id(userId);
+
+        if (favourites.isEmpty()) {
+            throw new NoFavoritesFoundException("No favorites found for the given user ID.");
+        }
+
+        return favourites.stream()
+                .map(this::convertToFavouritegetDto)
+                .collect(Collectors.toList());
+    }
+
 
 
     private FavouritePostDto convertToFavouritepostDto(Favourite favourite) {
