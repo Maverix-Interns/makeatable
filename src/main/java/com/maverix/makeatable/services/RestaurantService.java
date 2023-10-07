@@ -10,9 +10,17 @@ import com.maverix.makeatable.repositories.RestaurantRepository;
 import com.maverix.makeatable.repositories.UserRepository;
 import com.maverix.makeatable.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,12 +28,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
+    @Value("$upload.directory")
+    private String uploadDirectory;
 
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
     private final HttpServletRequest request;
     private final JwtUtils jwtUtils;
     private final JwtService jwtService;
+
     public RestaurantService(RestaurantRepository restaurantRepository, UserRepository userRepository, HttpServletRequest request, JwtUtils jwtUtils, JwtService jwtService) {
         this.restaurantRepository = restaurantRepository;
         this.userRepository = userRepository;
@@ -35,7 +46,7 @@ public class RestaurantService {
     }
 
     public Long getCurrentUserRestaurantId(String token) {
-        Long userId= Long.valueOf(jwtService.extractId(token));
+        Long userId = Long.valueOf(jwtService.extractId(token));
         Restaurant restaurant = restaurantRepository.findByUserId(userId);
         if (restaurant != null) {
             return restaurant.getId();
@@ -70,6 +81,7 @@ public class RestaurantService {
         return convertToGetDto(restaurant);
 
     }
+
     public RestaurantGetDto declineRestaurant(Long id) {
         Restaurant restaurant = restaurantRepository.getById(id);
         restaurant.setStatus(RestStatus.DECLINED);
@@ -128,6 +140,7 @@ public class RestaurantService {
             throw new RestaurantNotFoundException("Restaurant not found with ID: " + id);
         }
     }
+
     public List<RestaurantGetDto> getTop5RatedRestaurants() {
         List<Restaurant> top5Restaurants = restaurantRepository.findTop5ByOrderByAverageRatingDesc();
         return top5Restaurants.stream()
@@ -158,10 +171,18 @@ public class RestaurantService {
     }
 
     public boolean isManagerOfRestaurantbyId(Long restaurantId, Long jwtUserId) {
-        Restaurant restaurant=restaurantRepository.findById(restaurantId).orElse(null);
-        if(restaurant !=null){
+        Restaurant restaurant = restaurantRepository.findById(restaurantId).orElse(null);
+        if (restaurant != null) {
             return restaurant.getUser().getId().equals(jwtUserId);
         }
         return false;
+    }
+
+    public Restaurant saveRestaurant(Restaurant restaurant) {
+        return restaurantRepository.save(restaurant);
+    }
+
+    public Optional<Restaurant> getRestaurantFullById(Long restaurantId) {
+        return restaurantRepository.findById(restaurantId);
     }
 }
