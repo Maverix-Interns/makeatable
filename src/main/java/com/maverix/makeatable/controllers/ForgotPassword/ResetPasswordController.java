@@ -21,7 +21,6 @@ public class ResetPasswordController {
 
     @GetMapping
     public ResponseEntity<String> handleResetPasswordLink(@RequestParam("token") String token) {
-        // Validate the token and retrieve the associated email
         String email = userService.getEmailByPasswordResetToken(token);
 
         if (email == null) {
