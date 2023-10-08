@@ -3,6 +3,7 @@ package com.maverix.makeatable.services;
 import com.maverix.makeatable.dto.User.UserGetDto;
 import com.maverix.makeatable.dto.User.UserPostDto;
 import com.maverix.makeatable.dto.User.UserPutDto;
+import com.maverix.makeatable.exceptions.UserNotFoundException;
 import com.maverix.makeatable.models.User;
 import com.maverix.makeatable.repositories.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -87,6 +88,9 @@ public class UserService {
         if(user != null){
             user.setUsertoken(resetToken);
             userRepository.save(user);
+        }
+        else {
+            throw new UserNotFoundException("User with email " + email + " not found");
         }
     }
 
