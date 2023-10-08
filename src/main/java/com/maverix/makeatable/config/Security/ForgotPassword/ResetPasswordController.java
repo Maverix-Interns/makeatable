@@ -1,4 +1,4 @@
-package com.maverix.makeatable.controllers.ForgotPassword;
+package com.maverix.makeatable.config.Security.ForgotPassword;
 
 import com.maverix.makeatable.dto.User.ResetPasswordRequestDTO;
 import com.maverix.makeatable.services.UserService;

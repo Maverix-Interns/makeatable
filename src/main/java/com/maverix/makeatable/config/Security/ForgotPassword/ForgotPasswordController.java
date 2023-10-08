@@ -1,4 +1,4 @@
-package com.maverix.makeatable.controllers.ForgotPassword;
+package com.maverix.makeatable.config.Security.ForgotPassword;
 import com.maverix.makeatable.dto.User.ForgotPasswordRequestDto;
 import com.maverix.makeatable.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
