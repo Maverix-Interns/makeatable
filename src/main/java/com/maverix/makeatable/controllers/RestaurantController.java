@@ -1,8 +1,10 @@
 package com.maverix.makeatable.controllers;
+import com.maverix.makeatable.dto.Restaurent.RestaurantFilterDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
-import com.maverix.makeatable.dto.Restaurent.RestaurantSearchGetDto;
+
+import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.services.RestaurantService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
@@ -98,5 +100,18 @@ public class RestaurantController {
     @GetMapping("/search")
     public ResponseEntity<List<RestaurantSearchGetDto>> searchRestaurant(@RequestParam("query") String query){
         return ResponseEntity.ok(restaurantService.searchRestaurant(query));
+
+    @GetMapping("/filter")
+    public ResponseEntity<List<RestaurantFilterDto>> filterRestaurants(
+            @RequestParam(name = "location") String location,
+            @RequestParam(name = "foodType") FoodCategory foodType) {
+
+        RestaurantFilterDto filterDto = new RestaurantFilterDto();
+        filterDto.setLocation(location);
+        filterDto.setFoodType(foodType);
+
+        List<RestaurantFilterDto> filteredRestaurants = restaurantService.filterRestaurants(filterDto);
+
+        return ResponseEntity.ok(filteredRestaurants);
     }
 }

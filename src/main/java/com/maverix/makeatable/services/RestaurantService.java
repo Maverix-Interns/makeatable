@@ -1,5 +1,6 @@
 package com.maverix.makeatable.services;
 import com.maverix.makeatable.config.Security.JwtService;
+import com.maverix.makeatable.dto.Restaurent.RestaurantFilterDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
@@ -23,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -198,5 +200,22 @@ public class RestaurantService {
         RestaurantSearchGetDto restaurantSearchDto = new RestaurantSearchGetDto();
         BeanUtils.copyProperties(restaurant, restaurantSearchDto);
         return restaurantSearchDto;
+    public List<RestaurantFilterDto> filterRestaurants(RestaurantFilterDto filterDto) {
+        List<Restaurant> filteredRestaurants = restaurantRepository.filterRestaurantsByLocationAndFoodType(
+                filterDto.getLocation(),
+                filterDto.getFoodType()
+        );
+
+        // Convert Restaurant objects to RestaurantFilterDto objects
+        List<RestaurantFilterDto> filteredDtoList = new ArrayList<>();
+        for (Restaurant restaurant : filteredRestaurants) {
+            RestaurantFilterDto filteredDto = new RestaurantFilterDto();
+            filteredDto.setFullname(restaurant.getFullName());
+            filteredDto.setLocation(restaurant.getLocation());
+            filteredDto.setFoodType(restaurant.getFoodType());
+            filteredDtoList.add(filteredDto);
+        }
+
+        return filteredDtoList;
     }
 }
