@@ -2,6 +2,7 @@ package com.maverix.makeatable.controllers;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
+import com.maverix.makeatable.dto.Restaurent.RestaurantSearchGetDto;
 import com.maverix.makeatable.services.RestaurantService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
@@ -93,5 +94,9 @@ public class RestaurantController {
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<RestaurantSearchGetDto>> searchRestaurant(@RequestParam("query") String query){
+        return ResponseEntity.ok(restaurantService.searchRestaurant(query));
     }
 }

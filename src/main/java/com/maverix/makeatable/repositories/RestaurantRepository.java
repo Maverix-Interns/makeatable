@@ -16,4 +16,10 @@ public interface RestaurantRepository extends JpaRepository<Restaurant,Long> {
     Optional<Restaurant> findByUser_Id(Long userId);
 
     Restaurant findByUserId(Long userId);
+
+    @Query("SELECT s FROM Restaurant s WHERE " +
+            "LOWER(s.fullName) LIKE CONCAT('%', LOWER(:query), '%')" +
+            "OR LOWER(s.description) LIKE CONCAT('%', LOWER(:query), '%')" +
+            "OR LOWER(s.location) LIKE CONCAT('%', LOWER(:query), '%')")
+    List<Restaurant> searchRestaurant(String query);
 }
