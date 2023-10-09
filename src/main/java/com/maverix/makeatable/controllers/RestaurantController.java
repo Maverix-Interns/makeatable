@@ -3,6 +3,7 @@ import com.maverix.makeatable.dto.Restaurent.RestaurantFilterDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
+
 import com.maverix.makeatable.enums.FoodCategory;
 import com.maverix.makeatable.services.RestaurantService;
 import com.maverix.makeatable.util.Response;
@@ -96,6 +97,10 @@ public class RestaurantController {
 
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<RestaurantSearchGetDto>> searchRestaurant(@RequestParam("query") String query){
+        return ResponseEntity.ok(restaurantService.searchRestaurant(query));
+
     @GetMapping("/filter")
     public ResponseEntity<List<RestaurantFilterDto>> filterRestaurants(
             @RequestParam(name = "location") String location,

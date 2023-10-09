@@ -4,6 +4,7 @@ import com.maverix.makeatable.dto.Restaurent.RestaurantFilterDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPostDto;
 import com.maverix.makeatable.dto.Restaurent.RestaurantPutDto;
+import com.maverix.makeatable.dto.Restaurent.RestaurantSearchGetDto;
 import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.exceptions.RestaurantNotFoundException;
 import com.maverix.makeatable.models.Restaurant;
@@ -188,6 +189,17 @@ public class RestaurantService {
         return restaurantRepository.findById(restaurantId);
     }
 
+    public List<RestaurantSearchGetDto> searchRestaurant(String query) {
+        List<Restaurant> restaurants = restaurantRepository.searchRestaurant(query);
+        return restaurants.stream()
+                .map(restaurant -> convertToRestaurantSearchGetDto(restaurant))
+                .collect(Collectors.toList());
+    }
+
+    private RestaurantSearchGetDto convertToRestaurantSearchGetDto(Restaurant restaurant) {
+        RestaurantSearchGetDto restaurantSearchDto = new RestaurantSearchGetDto();
+        BeanUtils.copyProperties(restaurant, restaurantSearchDto);
+        return restaurantSearchDto;
     public List<RestaurantFilterDto> filterRestaurants(RestaurantFilterDto filterDto) {
         List<Restaurant> filteredRestaurants = restaurantRepository.filterRestaurantsByLocationAndFoodType(
                 filterDto.getLocation(),
