@@ -3,6 +3,11 @@ package com.maverix.makeatable.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class Favourite {
@@ -12,10 +17,15 @@ public class Favourite {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
-
+    private User createdByUser;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 }
