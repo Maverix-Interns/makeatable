@@ -17,12 +17,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -192,7 +186,7 @@ public class RestaurantService {
     public List<RestaurantSearchGetDto> searchRestaurant(String query) {
         List<Restaurant> restaurants = restaurantRepository.searchRestaurant(query);
         return restaurants.stream()
-                .map(restaurant -> convertToRestaurantSearchGetDto(restaurant))
+                .map(this::convertToRestaurantSearchGetDto)
                 .collect(Collectors.toList());
     }
 
@@ -200,13 +194,13 @@ public class RestaurantService {
         RestaurantSearchGetDto restaurantSearchDto = new RestaurantSearchGetDto();
         BeanUtils.copyProperties(restaurant, restaurantSearchDto);
         return restaurantSearchDto;
+    }
     public List<RestaurantFilterDto> filterRestaurants(RestaurantFilterDto filterDto) {
         List<Restaurant> filteredRestaurants = restaurantRepository.filterRestaurantsByLocationAndFoodType(
                 filterDto.getLocation(),
                 filterDto.getFoodType()
         );
 
-        // Convert Restaurant objects to RestaurantFilterDto objects
         List<RestaurantFilterDto> filteredDtoList = new ArrayList<>();
         for (Restaurant restaurant : filteredRestaurants) {
             RestaurantFilterDto filteredDto = new RestaurantFilterDto();
@@ -218,4 +212,5 @@ public class RestaurantService {
 
         return filteredDtoList;
     }
+
 }
