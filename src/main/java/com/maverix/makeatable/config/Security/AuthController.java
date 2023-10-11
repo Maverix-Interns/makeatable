@@ -5,7 +5,6 @@ import com.maverix.makeatable.config.Security.Dto.AuthenticationResponse;
 import com.maverix.makeatable.dto.User.UserRegistrationDto;
 import com.maverix.makeatable.models.User;
 import com.maverix.makeatable.models.VerificationToken;
-import com.maverix.makeatable.services.AuthService;
 import com.maverix.makeatable.services.VerificationTokenService;
 import com.maverix.makeatable.util.JwtUtils;
 import com.maverix.makeatable.util.Response;
@@ -42,7 +41,6 @@ public class AuthController {
     public ResponseEntity<Response<String>> registerUser(@RequestBody UserRegistrationDto registrationDto) {
         User registeredUser = authService.registerUser(registrationDto);
         VerificationToken verificationToken = verificationTokenService.generateVerificationToken(registeredUser);
-
         mailSender.sendVerificationEmail(registeredUser.getEmail(), verificationToken.getToken());
 
         Response<String> response = Response.<String>builder()
@@ -50,15 +48,24 @@ public class AuthController {
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .message("User registered successfully. Please check your email for verification.")
-                .data("Verification token: ")  // Include token if needed)
+                .data("Verification token: ")
                 .build();
-
         return ResponseEntity.ok(response);
     }
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request)
     {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+    @GetMapping("/verify/{token}")
+    public ResponseEntity<String> verifyUser(@PathVariable String token) {
+        User user = verificationTokenService.verifyUser(token);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.GONE).body("Verification token is expired or invalid.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body("User successfully verified.");
     }
 
 }

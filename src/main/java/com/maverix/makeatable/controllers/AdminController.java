@@ -1,6 +1,7 @@
 package com.maverix.makeatable.controllers;
 
 import com.maverix.makeatable.dto.Restaurent.RestaurantGetDto;
+import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.services.RestaurantService;
 import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,18 @@ public class AdminController {
                 .statusCode(HttpStatus.OK.value())
                 .status(HttpStatus.OK)
                 .message("Restaurants retrieved successfully")
+                .data(restaurants)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/pendingRestaurants")
+    public ResponseEntity<Response<List<RestaurantGetDto>>> getRestaurantsByStatus(){
+        List<RestaurantGetDto> restaurants = restaurantService.getRestaurantsByStatus(RestStatus.PENDING);
+        Response<List<RestaurantGetDto>> response = Response.<List<RestaurantGetDto>>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message("Restaurants with status pending retrieved successfully")
                 .data(restaurants)
                 .build();
         return ResponseEntity.ok(response);

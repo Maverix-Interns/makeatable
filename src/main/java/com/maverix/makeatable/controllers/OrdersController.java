@@ -9,6 +9,7 @@ import com.maverix.makeatable.util.Response;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -86,11 +87,11 @@ public class OrdersController {
                 .build();
         return ResponseEntity.ok(response);
     }
-
+    @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping
-    public ResponseEntity<Response<OrdersGetDto>> createOrder(@RequestBody OrdersPostDto ordersPostDto) {
-
-        OrdersGetDto createdOrder = ordersService.createOrder(ordersPostDto);
+    public ResponseEntity<Response<OrdersGetDto>> createOrder(@RequestBody OrdersPostDto ordersPostDto,@RequestHeader("Authorization") String token) {
+        Long userId= Long.valueOf(jwtService.extractId(token));
+        OrdersGetDto createdOrder = ordersService.createOrder(ordersPostDto,userId);
 
         Response<OrdersGetDto> response = Response.<OrdersGetDto>builder()
                 .timeStamp(LocalDateTime.now())
@@ -102,7 +103,7 @@ public class OrdersController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     @PutMapping("/{id}")
     public ResponseEntity<Response<OrdersGetDto>> updateOrder(@PathVariable Long id, @RequestBody OrdersPutDto ordersPutDto) {
 

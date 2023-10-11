@@ -1,6 +1,7 @@
 package com.maverix.makeatable.repositories;
 
 import com.maverix.makeatable.enums.FoodCategory;
+import com.maverix.makeatable.enums.RestStatus;
 import com.maverix.makeatable.models.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -29,4 +30,6 @@ public interface RestaurantRepository extends JpaRepository<Restaurant,Long> {
     List<Restaurant> filterRestaurantsByLocationAndFoodType(
             @Param("location") String location,
             @Param("foodType") FoodCategory foodType);
+
+    List<Restaurant> findByStatus(RestStatus status);
 }

@@ -6,6 +6,7 @@ import com.maverix.makeatable.models.RestaurantRating;
 import com.maverix.makeatable.services.RestaurantRatingService;
 import com.maverix.makeatable.services.RestaurantService;
 import org.hibernate.Hibernate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,7 @@ public class RestaurantRatingController {
         this.restaurantRatingService = restaurantRatingService;
         this.restaurantService = restaurantService;
     }
-
+    @PreAuthorize("isAuthenticated()")
     @PostMapping
     public RestaurantRating submitRating(@RequestParam Long restaurantId, @RequestParam Double rating) {
         Restaurant restaurant = restaurantService.getfullRestaurantById(restaurantId);

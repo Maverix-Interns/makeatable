@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 
 @Data
 public class OrdersPostDto {
-    private Long userId;
     private Long restaurantId;
     private LocalDateTime dateTime;
     private Long seatNum;
