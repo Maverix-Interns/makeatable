@@ -40,17 +40,14 @@ public class VerificationTokenService {
                 .orElseThrow(() -> new TokenNotFoundException("Verification token not found"));
 
         if (verificationToken.getExpiryDate().isBefore(LocalDateTime.now())) {
-            //  Token has expired
-            // You can handle token expiration logic here
-            // For now, let's just remove the token and return null
             verificationTokenRepository.delete(verificationToken);
             return null;
         }
 
         User user = verificationToken.getUser();
-        user.setUserStatus(UserStatus.VERIFIED);  // Set user status to VERIFIED
+        user.setUserStatus(UserStatus.VERIFIED);
         userRepository.save(user);
-        verificationTokenRepository.delete(verificationToken);  // Delete the token after verification
+        verificationTokenRepository.delete(verificationToken);
 
         return user;
     }

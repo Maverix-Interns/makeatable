@@ -25,8 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
-    @Value("$upload.directory")
-    private String uploadDirectory;
 
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
@@ -187,6 +185,12 @@ public class RestaurantService {
         List<Restaurant> restaurants = restaurantRepository.searchRestaurant(query);
         return restaurants.stream()
                 .map(this::convertToRestaurantSearchGetDto)
+                .collect(Collectors.toList());
+    }
+    public List<RestaurantGetDto> getRestaurantsByStatus(RestStatus status) {
+        List<Restaurant> restaurants = restaurantRepository.findByStatus(status);
+        return restaurants.stream()
+                .map(this::convertToGetDto)
                 .collect(Collectors.toList());
     }
 

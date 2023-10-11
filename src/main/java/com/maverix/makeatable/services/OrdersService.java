@@ -79,20 +79,21 @@ public class OrdersService {
         Orders savedOrder = ordersRepository.save(orders);
         return convertToDto(savedOrder);
     }
-    public void createOrder(OrderRequestDTO orderRequest) {
+    public OrdersGetDto createOrder(OrdersPostDto orderRequest, Long userId) {
 
-        Restaurant restaurant = restaurantRepository.findByFullName(orderRequest.getRestName());
-        User user = userRepository.findById(orderRequest.getUserId())
-                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + orderRequest.getUserId()));
+        Restaurant restaurant = restaurantRepository.getById(orderRequest.getRestaurantId());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
 
         Orders order = new Orders();
         order.setDateTime(LocalDateTime.now());
         order.setSeatNum(orderRequest.getSeatNum());
-        order.setTypeRoom(orderRequest.getTypeRoom());
+        order.setTypeRoom(orderRequest.getRoomType());
         order.setRestaurant(restaurant);
         order.setCreatedByUser(user);
 
         ordersRepository.save(order);
+        return convertToDto(order);
     }
 
     public OrdersGetDto updateOrder(Long id, OrdersPutDto ordersPutDto) {
@@ -147,5 +148,4 @@ public class OrdersService {
             throw new OrderNotFoundException("Order not found for ID: " + orderId);
         }
     }
-
 }

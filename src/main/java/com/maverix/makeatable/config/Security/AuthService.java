@@ -1,4 +1,4 @@
-package com.maverix.makeatable.services;
+package com.maverix.makeatable.config.Security;
 
 import com.maverix.makeatable.dto.User.UserRegistrationDto;
 import com.maverix.makeatable.enums.UserStatus;
