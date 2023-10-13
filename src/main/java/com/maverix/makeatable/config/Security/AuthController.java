@@ -23,24 +23,22 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final HttpServletRequest request;
     private final JwtUtils jwtUtils;
-    private final AuthService authService;
     private final VerificationTokenService verificationTokenService;
     private final MailSender mailSender;
 
 
     public AuthController(AuthenticationService authenticationService, HttpServletRequest request, JwtUtils jwtUtils,
-                          AuthService authService, VerificationTokenService verificationTokenService, MailSender mailSender) {
+                         VerificationTokenService verificationTokenService, MailSender mailSender) {
         this.authenticationService = authenticationService;
         this.request = request;
         this.jwtUtils = jwtUtils;
-        this.authService = authService;
         this.verificationTokenService = verificationTokenService;
         this.mailSender = mailSender;
     }
 
     @PostMapping("/register")
     public ResponseEntity<Response<String>> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
-        User registeredUser = authService.registerUser(registrationDto);
+        User registeredUser = authenticationService.registerUser(registrationDto);
         VerificationToken verificationToken = verificationTokenService.generateVerificationToken(registeredUser);
         mailSender.sendVerificationEmail(registeredUser.getEmail(), verificationToken.getToken());
 
