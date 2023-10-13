@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @RestController
@@ -33,7 +36,8 @@ public class CustomerProfileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response<UserGetDto>> getUserProfile(@PathVariable Long id) {
+    public ResponseEntity<Response<UserGetDto>>  getUserProfile(
+            @PathVariable @Positive(message = "Invalid user ID") Long id) {
         try {
             String jwtUserId = jwtService.extractId(jwtUtils.getJwtFromRequest(request));
 
@@ -69,7 +73,7 @@ public class CustomerProfileController {
     }
     @PreAuthorize("#email == principal.username")
     @PutMapping("/{email}")
-    public ResponseEntity<Response<String>> updateUserProfile(@PathVariable String email, @RequestBody CustomerProfileUpdateDto updateDto) {
+    public ResponseEntity<Response<String>> updateUserProfile(@PathVariable @Email(message = "invalid email") String email, @RequestBody @Valid CustomerProfileUpdateDto updateDto) {
         customerProfileService.updateUserProfile(email, updateDto);
 
         Response<String> response = Response.<String>builder()

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @RestController
@@ -22,24 +23,22 @@ public class AuthController {
     private final AuthenticationService authenticationService;
     private final HttpServletRequest request;
     private final JwtUtils jwtUtils;
-    private final AuthService authService;
     private final VerificationTokenService verificationTokenService;
     private final MailSender mailSender;
 
 
     public AuthController(AuthenticationService authenticationService, HttpServletRequest request, JwtUtils jwtUtils,
-                          AuthService authService, VerificationTokenService verificationTokenService, MailSender mailSender) {
+                         VerificationTokenService verificationTokenService, MailSender mailSender) {
         this.authenticationService = authenticationService;
         this.request = request;
         this.jwtUtils = jwtUtils;
-        this.authService = authService;
         this.verificationTokenService = verificationTokenService;
         this.mailSender = mailSender;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Response<String>> registerUser(@RequestBody UserRegistrationDto registrationDto) {
-        User registeredUser = authService.registerUser(registrationDto);
+    public ResponseEntity<Response<String>> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
+        User registeredUser = authenticationService.registerUser(registrationDto);
         VerificationToken verificationToken = verificationTokenService.generateVerificationToken(registeredUser);
         mailSender.sendVerificationEmail(registeredUser.getEmail(), verificationToken.getToken());
 
@@ -53,7 +52,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request)
+    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request)
     {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }

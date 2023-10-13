@@ -7,34 +7,25 @@ import com.maverix.makeatable.util.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/admin")
+@Validated
 public class AdminController {
     private final RestaurantService restaurantService;
 
     public AdminController(RestaurantService restaurantService) {
         this.restaurantService = restaurantService;
     }
-    @GetMapping
-    public ResponseEntity<Response<List<RestaurantGetDto>>> getAllRestaurants() {
-        List<RestaurantGetDto> restaurants = restaurantService.getAllRestaurants();
-        Response<List<RestaurantGetDto>> response = Response.<List<RestaurantGetDto>>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Restaurants retrieved successfully")
-                .data(restaurants)
-                .build();
-        return ResponseEntity.ok(response);
-    }
     @GetMapping("/pendingRestaurants")
-    public ResponseEntity<Response<List<RestaurantGetDto>>> getRestaurantsByStatus(){
+    public ResponseEntity<Response<List<RestaurantGetDto>>> getRestaurantsByStatus() {
         List<RestaurantGetDto> restaurants = restaurantService.getRestaurantsByStatus(RestStatus.PENDING);
         Response<List<RestaurantGetDto>> response = Response.<List<RestaurantGetDto>>builder()
                 .timeStamp(LocalDateTime.now())
@@ -47,8 +38,9 @@ public class AdminController {
     }
 
     @PutMapping("approve/{id}")
-    public ResponseEntity<Response<RestaurantGetDto>> approveRestaurant(@PathVariable Long id) {
-        RestaurantGetDto updatedRestaurant= restaurantService.approveRestaurant(id);
+    public ResponseEntity<Response<RestaurantGetDto>> approveRestaurant(
+            @PathVariable @Positive(message = "Invalid restaurant ID") Long id) {
+        RestaurantGetDto updatedRestaurant = restaurantService.approveRestaurant(id);
         Response<RestaurantGetDto> response = Response.<RestaurantGetDto>builder()
                 .timeStamp(LocalDateTime.now())
                 .statusCode(HttpStatus.OK.value())
@@ -58,9 +50,11 @@ public class AdminController {
                 .build();
         return ResponseEntity.ok(response);
     }
+
     @PutMapping("decline/{id}")
-    public ResponseEntity<Response<RestaurantGetDto>> declineRestaurant(@PathVariable Long id) {
-        RestaurantGetDto updatedRestaurant= restaurantService.declineRestaurant(id);
+    public ResponseEntity<Response<RestaurantGetDto>> declineRestaurant(
+            @PathVariable @Positive(message = "Invalid restaurant ID") Long id) {
+        RestaurantGetDto updatedRestaurant = restaurantService.declineRestaurant(id);
         Response<RestaurantGetDto> response = Response.<RestaurantGetDto>builder()
                 .timeStamp(LocalDateTime.now())
                 .statusCode(HttpStatus.OK.value())
