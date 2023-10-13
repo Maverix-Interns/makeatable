@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 @RestController
@@ -38,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Response<String>> registerUser(@RequestBody UserRegistrationDto registrationDto) {
+    public ResponseEntity<Response<String>> registerUser(@Valid @RequestBody UserRegistrationDto registrationDto) {
         User registeredUser = authService.registerUser(registrationDto);
         VerificationToken verificationToken = verificationTokenService.generateVerificationToken(registeredUser);
         mailSender.sendVerificationEmail(registeredUser.getEmail(), verificationToken.getToken());
@@ -53,7 +54,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request)
+    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest request)
     {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }

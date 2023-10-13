@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -32,7 +34,14 @@ public class ImageController {
     }
 
     @PostMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<String> uploadImageRest(@PathVariable Long restaurantId, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadImageRest(@PathVariable @Positive(message = "Invalid restaurant ID") Long restaurantId,
+                                                  @RequestParam("file") @NotNull(message = "File cannot be null") MultipartFile file)
+            throws IOException {
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty");
+        }
+
         Optional<Restaurant> optionalRestaurant = restaurantService.getRestaurantFullById(restaurantId);
 
         if (optionalRestaurant.isPresent()) {
@@ -49,7 +58,14 @@ public class ImageController {
     }
 
     @PostMapping("/user/{userId}")
-    public ResponseEntity<String> uploadImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) throws IOException {
+    public ResponseEntity<String> uploadImage(@PathVariable @Positive(message = "Invalid user ID") Long userId,
+                                              @RequestParam("file") @NotNull(message = "File cannot be null") MultipartFile file)
+            throws IOException {
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty");
+        }
+
         Optional<User> optionalUser = userService.getUserFullById(userId);
 
         if (optionalUser.isPresent()) {
