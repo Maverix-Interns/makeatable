@@ -5,8 +5,8 @@ import com.maverix.makeatable.enums.UserStatus;
 import com.maverix.makeatable.exceptions.DuplicateEmailException;
 import com.maverix.makeatable.models.User;
 import com.maverix.makeatable.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
@@ -14,10 +14,11 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
-
-    public AuthService(UserRepository userRepository) {
+    private final PasswordEncoder passwordEncoder;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
 
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -26,7 +27,7 @@ public class AuthService {
             User user = new User();
             user.setFullName(registrationDto.getFullName());
             user.setEmail(registrationDto.getEmail());
-            user.setPassword(registrationDto.getPassword());
+            user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
             user.setMobileNum(registrationDto.getMobileNumber());
             user.setPreference(registrationDto.getPreference());
             user.setUserType(registrationDto.getUserType());
