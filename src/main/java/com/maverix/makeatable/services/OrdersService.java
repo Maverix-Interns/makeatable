@@ -148,4 +148,16 @@ public class OrdersService {
             throw new OrderNotFoundException("Order not found for ID: " + orderId);
         }
     }
+
+    public List<OrdersGetDto> getOrdersForCurrentUser(Long userId) {
+        List<Orders> userOrders = ordersRepository.findByCreatedByUserId(userId);
+
+        if (userOrders.isEmpty()) {
+            throw new OrderNotFoundException("No orders found for the user with ID: " + userId);
+        }
+        return userOrders.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 }

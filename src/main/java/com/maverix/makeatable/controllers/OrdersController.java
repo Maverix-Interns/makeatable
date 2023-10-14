@@ -10,9 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/orders")
 public class OrdersController {
-
+    private static final Logger logger = LoggerFactory.getLogger(OrdersController.class);
     private final RestaurantService restaurantService;
     private final OrdersService ordersService;
     private final HttpServletRequest request;
@@ -35,7 +35,6 @@ public class OrdersController {
         this.jwtUtils = jwtUtils;
         this.jwtService = jwtService;
     }
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     @GetMapping("restaurant/{restaurantId}")
     public Response<List<OrderDetailsDTO>> getOrdersForRestaurant(@PathVariable Long restaurantId) {
         Long jwtUserId = Long.valueOf(jwtService.extractId(jwtUtils.getJwtFromRequest(request)));
@@ -58,18 +57,18 @@ public class OrdersController {
                     .build();
         }
     }
-    @GetMapping
-    public ResponseEntity<Response<List<OrdersGetDto>>> getAllOrders() {
-        List<OrdersGetDto> orders = ordersService.getAllOrders();
-        Response<List<OrdersGetDto>> response = Response.<List<OrdersGetDto>>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Orders retrieved successfully")
-                .data(orders)
-                .build();
-        return ResponseEntity.ok(response);
-    }
+//    @GetMapping
+//    public ResponseEntity<Response<List<OrdersGetDto>>> getAllOrders() {
+//        List<OrdersGetDto> orders = ordersService.getAllOrders();
+//        Response<List<OrdersGetDto>> response = Response.<List<OrdersGetDto>>builder()
+//                .timeStamp(LocalDateTime.now())
+//                .statusCode(HttpStatus.OK.value())
+//                .status(HttpStatus.OK)
+//                .message("Orders retrieved successfully")
+//                .data(orders)
+//                .build();
+//        return ResponseEntity.ok(response);
+//    }
     @GetMapping("/last/{userId}")
     public LastOrderDto getLastOrderForUser(@PathVariable Long userId) {
         return ordersService.getLastOrderForUser(userId);
@@ -87,6 +86,48 @@ public class OrdersController {
                 .build();
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/getOrdersForUser")
+    public ResponseEntity<Response<List<OrdersGetDto>>> getOrdersForCurrentUser(HttpServletRequest request) {
+        try {
+            String jwtToken = jwtUtils.getJwtFromRequest(request);
+            logger.debug("JWT token from request: {}", jwtToken);
+
+            String jwtUserId = jwtService.extractId(jwtToken);
+            logger.debug("Extracted JWT user ID: {}", jwtUserId);
+
+            Long userId = Long.parseLong(jwtUserId);
+            logger.debug("Converted JWT user ID to Long: {}", userId);
+
+            List<OrdersGetDto> orders = ordersService.getOrdersForCurrentUser(userId);
+
+            Response<List<OrdersGetDto>> response = Response.<List<OrdersGetDto>>builder()
+                    .timeStamp(LocalDateTime.now())
+                    .statusCode(HttpStatus.OK.value())
+                    .status(HttpStatus.OK)
+                    .message("Orders retrieved successfully for the current user")
+                    .data(orders)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (NumberFormatException e) {
+            logger.error("Invalid user ID format in the JWT token: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Response.<List<OrdersGetDto>>builder()
+                    .timeStamp(LocalDateTime.now())
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .status(HttpStatus.BAD_REQUEST)
+                    .message("Invalid user ID format in the JWT token")
+                    .build());
+        } catch (Exception e) {
+            logger.error("An error occurred: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.<List<OrdersGetDto>>builder()
+                    .timeStamp(LocalDateTime.now())
+                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .message("An error occurred: " + e.getMessage())
+                    .build());
+        }
+    }
+
     @PreAuthorize("hasAuthority('CUSTOMER')")
     @PostMapping
     public ResponseEntity<Response<OrdersGetDto>> createOrder(@RequestBody OrdersPostDto ordersPostDto,@RequestHeader("Authorization") String token) {

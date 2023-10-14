@@ -14,11 +14,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 @Service
 public class JwtService {
     private static final String SECRET_KEY = "4e8e3a7215d4834a0bfade46cf9b9134104f2be3fea31faee6fbb54ad4fd4761";
     private final UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+
 
     public JwtService(UserService userService) {
         this.userService = userService;
@@ -29,8 +34,11 @@ public class JwtService {
     }
 
     public String extractId(String token) {
-        return extractClaim(token, Claims::getId);
+        Claims claims = extractAllClaims(token);
+        logger.debug("Claims extracted from JWT: {}", claims);
+        return claims.getId();
     }
+
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

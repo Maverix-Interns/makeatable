@@ -12,4 +12,6 @@ public interface OrdersRepository extends JpaRepository<Orders,Long> {
     List<Orders> findByRestaurantId(Long restaurantId);
 
     List<Orders> findTop10ByOrderByDateTimeDesc();
+
+    List<Orders> findByCreatedByUserId(Long userId);
 }

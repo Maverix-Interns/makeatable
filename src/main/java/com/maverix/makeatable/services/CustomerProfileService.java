@@ -7,12 +7,8 @@ import com.maverix.makeatable.enums.UserType;
 import com.maverix.makeatable.exceptions.UserNotFoundException;
 import com.maverix.makeatable.models.User;
 import com.maverix.makeatable.repositories.UserRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Optional;
 @Service

@@ -50,7 +50,7 @@ public class ImageController {
             restaurant.setImageUrl(fileName);
             restaurantService.saveRestaurant(restaurant);
 
-            String resourceURL = baseURL + "/static/uploads/" + fileName;
+            String resourceURL = baseURL +  fileName;
             return ResponseEntity.accepted().body("Image uploaded. URL: " + resourceURL);
         } else {
             throw new ResourceNotFoundException("Restaurant not found with id: " + restaurantId);
