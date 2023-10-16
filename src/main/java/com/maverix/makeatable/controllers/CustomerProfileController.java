@@ -36,41 +36,49 @@ public class CustomerProfileController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Response<UserGetDto>>  getUserProfile(
-            @PathVariable @Positive(message = "Invalid user ID") Long id) {
+    public ResponseEntity<Response<UserGetDto>> getUserProfile(@PathVariable @Positive(message = "Invalid user ID") Long id) {
         try {
             String jwtUserId = jwtService.extractId(jwtUtils.getJwtFromRequest(request));
 
             if (!jwtUserId.equals(String.valueOf(id))) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Response.<UserGetDto>builder()
+                                .timeStamp(LocalDateTime.now())
+                                .statusCode(HttpStatus.FORBIDDEN.value())
+                                .status(HttpStatus.FORBIDDEN)
+                                .message("You are not the user associated with this account")
+                                .build());
             }
 
-            UserGetDto usergetDto = customerProfileService.getUserProfile(id);
+            UserGetDto userGetDto = customerProfileService.getUserProfile(id);
 
             Response<UserGetDto> response = Response.<UserGetDto>builder()
                     .timeStamp(LocalDateTime.now())
                     .statusCode(HttpStatus.OK.value())
                     .status(HttpStatus.OK)
-                    .data(usergetDto)
+                    .data(userGetDto)
                     .build();
 
             return ResponseEntity.ok(response);
         } catch (ExpiredJwtException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Response.<UserGetDto>builder()
-                    .timeStamp(LocalDateTime.now())
-                    .statusCode(HttpStatus.UNAUTHORIZED.value())
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .message("JWT token has expired.")
-                    .build());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Response.<UserGetDto>builder()
+                            .timeStamp(LocalDateTime.now())
+                            .statusCode(HttpStatus.UNAUTHORIZED.value())
+                            .status(HttpStatus.UNAUTHORIZED)
+                            .message("JWT token has expired.")
+                            .build());
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.<UserGetDto>builder()
-                    .timeStamp(LocalDateTime.now())
-                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .message("An error occurred: " + e.getMessage())
-                    .build());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Response.<UserGetDto>builder()
+                            .timeStamp(LocalDateTime.now())
+                            .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .message("An error occurred: " + e.getMessage())
+                            .build());
         }
     }
+
     @PreAuthorize("#email == principal.username")
     @PutMapping("/{email}")
     public ResponseEntity<Response<String>> updateUserProfile(@PathVariable @Email(message = "invalid email") String email, @RequestBody @Valid CustomerProfileUpdateDto updateDto) {
