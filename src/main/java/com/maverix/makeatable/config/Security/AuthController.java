@@ -2,6 +2,7 @@ package com.maverix.makeatable.config.Security;
 import com.maverix.makeatable.config.Mail.MailSender;
 import com.maverix.makeatable.config.Security.Dto.AuthenticationRequest;
 import com.maverix.makeatable.config.Security.Dto.AuthenticationResponse;
+import com.maverix.makeatable.config.Security.Dto.ExtractEmailDto;
 import com.maverix.makeatable.dto.User.UserRegistrationDto;
 import com.maverix.makeatable.models.User;
 import com.maverix.makeatable.models.VerificationToken;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @RequestMapping("auth")
 
 public class AuthController {
+
     private final AuthenticationService authenticationService;
     private final HttpServletRequest request;
     private final JwtUtils jwtUtils;
@@ -65,6 +67,26 @@ public class AuthController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body("User successfully verified.");
+    }
+    @GetMapping("/extractId")
+    public ResponseEntity<Response<Long>> printId()
+    {
+        return authenticationService.getIdFromToken(request);
+    }
+    @PostMapping("/extractId")
+    public ResponseEntity<Response<Long>> printIdUsingBody(@RequestBody ExtractEmailDto extractEmailDto)
+    {
+        return authenticationService.getIdFromTokenUsingBody(extractEmailDto);
+    }
+    @GetMapping("/extractEmail")
+        public ResponseEntity<Response<String>> printEmail()
+    {
+        return authenticationService.getEmailFromToken(request);
+    }
+    @PostMapping("/extractEmail")
+    public ResponseEntity<Response<String>> printEmailUsingBody(@RequestBody ExtractEmailDto extractEmailDto)
+    {
+        return authenticationService.getEmailFromTokenUsingBody(extractEmailDto);
     }
 
 }
