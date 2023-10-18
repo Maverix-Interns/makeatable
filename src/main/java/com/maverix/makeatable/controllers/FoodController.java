@@ -37,32 +37,7 @@ public class FoodController {
         this.jwtUtils = jwtUtils;
         this.restaurantRepository = restaurantRepository;
     }
-    @PreAuthorize("permitAll")
-    @GetMapping
-    public ResponseEntity<Response<List<FoodGetDto>>> getAllFoods() {
-        List<FoodGetDto> foods = foodService.getAllFoods();
-        Response<List<FoodGetDto>> response = Response.<List<FoodGetDto>>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Foods retrieved successfully")
-                .data(foods)
-                .build();
-        return ResponseEntity.ok(response);
-    }
-    @PreAuthorize("permitAll")
-    @GetMapping("/{id}")
-    public ResponseEntity<Response<FoodGetDto>> getFoodById(@PathVariable Long id) {
-        FoodGetDto food = foodService.getFoodById(id);
-        Response<FoodGetDto> response = Response.<FoodGetDto>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Food retrieved successfully")
-                .data(food)
-                .build();
-        return ResponseEntity.ok(response);
-    }
+
     @PreAuthorize("hasAuthority('MANAGER')")
     @PutMapping("/{id}")
     public ResponseEntity<Response<FoodGetDto>> updateFood(@PathVariable Long id,
@@ -121,19 +96,8 @@ public class FoodController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
-    @PreAuthorize("permitAll()")
-    @GetMapping("/top")
-    public ResponseEntity<Response<List<FoodGetDto>>> getTopFoods() {
-        List<FoodGetDto> topFoods = foodService.getTop5RatedFoods();
-        Response<List<FoodGetDto>> response = Response.<List<FoodGetDto>>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(HttpStatus.OK.value())
-                .status(HttpStatus.OK)
-                .message("Top 5 foods retrieved successfully")
-                .data(topFoods)
-                .build();
-        return ResponseEntity.ok(response);
-    }
+
+
     @PreAuthorize("hasAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<Response<FoodGetDto>> addFood(@RequestBody FoodPostDto foodPostDto,

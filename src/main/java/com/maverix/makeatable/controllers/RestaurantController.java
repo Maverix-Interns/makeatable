@@ -96,35 +96,6 @@ public class RestaurantController {
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
     }
-    @GetMapping("/top-rated")
-    public ResponseEntity<Response<List<RestaurantGetDto>>> getTop5RatedRestaurants() {
-        List<RestaurantGetDto> topRatedRestaurants = restaurantService.getTop5RatedRestaurants();
 
-        Response<List<RestaurantGetDto>> response = Response.<List<RestaurantGetDto>>builder()
-                .timeStamp(LocalDateTime.now())
-                .statusCode(200)
-                .status(org.springframework.http.HttpStatus.OK)
-                .message("Top 5 rated restaurants fetched successfully")
-                .data(topRatedRestaurants)
-                .build();
 
-        return ResponseEntity.ok(response);
-    }
-    @GetMapping("/search")
-    public ResponseEntity<List<RestaurantSearchGetDto>> searchRestaurant(@RequestParam("query") String query) {
-        List<RestaurantSearchGetDto> searchResults = restaurantService.searchRestaurant(query);
-        return ResponseEntity.ok(searchResults);
-    }
-
-    @GetMapping("/filter")
-    public ResponseEntity<List<RestaurantFilterDto>> filterRestaurants(@RequestParam("location") String location,@RequestParam("foodType") FoodCategory foodType) {
-
-        RestaurantFilterDto filterDto = new RestaurantFilterDto();
-        filterDto.setLocation(location);
-        filterDto.setFoodType(foodType);
-
-        List<RestaurantFilterDto> filteredRestaurants = restaurantService.filterRestaurants(filterDto);
-
-        return ResponseEntity.ok(filteredRestaurants);
-    }
 }

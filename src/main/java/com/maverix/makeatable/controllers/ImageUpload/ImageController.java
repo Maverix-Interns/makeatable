@@ -1,13 +1,16 @@
 package com.maverix.makeatable.controllers.ImageUpload;
 
 import com.maverix.makeatable.exceptions.ResourceNotFoundException;
+import com.maverix.makeatable.models.Food;
 import com.maverix.makeatable.models.Restaurant;
 import com.maverix.makeatable.models.User;
+import com.maverix.makeatable.services.FoodService;
 import com.maverix.makeatable.services.RestaurantService;
 import com.maverix.makeatable.services.StorageService;
 import com.maverix.makeatable.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,11 +29,12 @@ public class ImageController {
     private final UserService userService;
     private final StorageService storageService;
     private final RestaurantService restaurantService;
-
-    public ImageController(UserService userService, StorageService storageService, RestaurantService restaurantService) {
+    private final FoodService foodService;
+    public ImageController(UserService userService, StorageService storageService, RestaurantService restaurantService, FoodService foodService) {
         this.userService = userService;
         this.storageService = storageService;
         this.restaurantService = restaurantService;
+        this.foodService = foodService;
     }
 
     @PostMapping("/restaurant/{restaurantId}")
@@ -50,7 +54,7 @@ public class ImageController {
             restaurant.setImageUrl(fileName);
             restaurantService.saveRestaurant(restaurant);
 
-            String resourceURL = baseURL + "/static/uploads/" + fileName;
+            String resourceURL = baseURL +  fileName;
             return ResponseEntity.accepted().body("Image uploaded. URL: " + resourceURL);
         } else {
             throw new ResourceNotFoundException("Restaurant not found with id: " + restaurantId);
@@ -74,10 +78,33 @@ public class ImageController {
             user.setImageUrl(fileName);
             userService.saveUser(user);
 
-            String resourceURL = baseURL + "/static/uploads/" + fileName;
+            String resourceURL = baseURL  + fileName;
             return ResponseEntity.accepted().body("Image uploaded. URL: " + resourceURL);
         } else {
             throw new ResourceNotFoundException("User not found with id: " + userId);
+        }
+    }
+    @PostMapping("/Food/{foodId}")
+    public ResponseEntity<String> uploadImageFood(@PathVariable @Positive(message = "Invalid Food ID") Long foodId,
+                                                  @RequestParam("file") @NotNull(message = "File cannot be null") MultipartFile file)
+            throws IOException {
+
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty");
+        }
+
+        Optional<Food> optionalFood = foodService.getFullFoodById(foodId);
+
+        if (optionalFood.isPresent()) {
+            Food food = optionalFood.get();
+            String fileName = storageService.storeFile(file);
+            food.setImageUrl(fileName);
+            foodService.saveFood(food);
+
+            String resourceURL = baseURL +  fileName;
+            return ResponseEntity.accepted().body("Image uploaded. URL: " + resourceURL);
+        } else {
+            throw new ResourceNotFoundException("Restaurant not found with id: " + foodId);
         }
     }
 }

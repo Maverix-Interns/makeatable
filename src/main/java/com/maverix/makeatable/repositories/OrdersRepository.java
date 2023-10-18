@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface OrdersRepository extends JpaRepository<Orders,Long> {
-    Optional<Orders> findTopByCreatedByUserIdOrderByDateTimeDesc(Long userId);
+    Optional<Orders> findTopByCreatedByUserIdOrderByFromDateTimeDesc(Long userId);
 
     List<Orders> findByRestaurantId(Long restaurantId);
 
-    List<Orders> findTop10ByOrderByDateTimeDesc();
+
+    List<Orders> findByCreatedByUserId(Long userId);
 }

@@ -49,7 +49,7 @@ public class OrdersService {
         return orderDetailsDTO;
     }
     public LastOrderDto getLastOrderForUser(Long userId){
-        Optional<Orders> lastOrderOptional = ordersRepository.findTopByCreatedByUserIdOrderByDateTimeDesc(userId);
+        Optional<Orders> lastOrderOptional = ordersRepository.findTopByCreatedByUserIdOrderByFromDateTimeDesc(userId);
         if (lastOrderOptional.isPresent()) {
             Orders lastOrder = lastOrderOptional.get();
             String location = "";
@@ -60,7 +60,7 @@ public class OrdersService {
             LastOrderDto lastOrderDto = new LastOrderDto();
             lastOrderDto.setId(lastOrder.getId());
             lastOrderDto.setLocation(location);
-            lastOrderDto.setDateTime(lastOrder.getDateTime());
+            lastOrderDto.setDateTime(lastOrder.getFromDateTime());
             lastOrderDto.setRoomType(lastOrder.getTypeRoom());
 
             return new OrderResponseDTO(lastOrderDto).getLastOrder();
@@ -84,14 +84,14 @@ public class OrdersService {
         Restaurant restaurant = restaurantRepository.getById(orderRequest.getRestaurantId());
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
-
         Orders order = new Orders();
-        order.setDateTime(LocalDateTime.now());
+        order.setCreatedAt(LocalDateTime.now());
         order.setSeatNum(orderRequest.getSeatNum());
         order.setTypeRoom(orderRequest.getRoomType());
         order.setRestaurant(restaurant);
         order.setCreatedByUser(user);
-
+        order.setFromDateTime(orderRequest.getDateTime());
+        order.setToDateTime(orderRequest.getDateTime().plusMinutes(15));
         ordersRepository.save(order);
         return convertToDto(order);
     }
@@ -137,7 +137,8 @@ public class OrdersService {
             Orders order = optionalOrder.get();
             LocalDateTime rescheduledDateTime = rescheduleDto.getRescheduledDateTime();
             if (rescheduledDateTime != null) {
-                order.setDateTime(rescheduledDateTime);
+                order.setFromDateTime(rescheduledDateTime);
+                order.setToDateTime(rescheduledDateTime.plusMinutes(15));
                 ordersRepository.save(order);
                 System.out.println("Order with ID " + orderId + " rescheduled to: " + rescheduledDateTime);
                 return true;
@@ -148,4 +149,16 @@ public class OrdersService {
             throw new OrderNotFoundException("Order not found for ID: " + orderId);
         }
     }
+
+    public List<OrdersGetDto> getOrdersForCurrentUser(Long userId) {
+        List<Orders> userOrders = ordersRepository.findByCreatedByUserId(userId);
+
+        if (userOrders.isEmpty()) {
+            throw new OrderNotFoundException("No orders found for the user with ID: " + userId);
+        }
+        return userOrders.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 }
