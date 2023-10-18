@@ -103,4 +103,12 @@ public class FoodService {
     private boolean isValidFoodPostDto(FoodPostDto foodPostDto) {
         return foodPostDto.getName() != null && foodPostDto.getCategory() != null;
     }
+
+    public Optional<Food> getFullFoodById(Long foodId) {
+        return foodRepository.findById(foodId);
+    }
+
+    public void saveFood(Food food) {
+        foodRepository.save(food);
+    }
 }

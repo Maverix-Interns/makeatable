@@ -27,8 +27,13 @@ public class SecurityConfiguration {
             http
                     .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth -> auth
-//                            .requestMatchers("/auth/**").permitAll()
-                            .anyRequest().permitAll()
+//                        //    .requestMatchers("/auth/**").permitAll()
+                                    .requestMatchers("/public/**").permitAll()
+                                    .requestMatchers("/swagger-ui/**").permitAll()
+                                    .requestMatchers("/v3/api-docs/**","v2/api-docs/**","/swagger-resources","/swagger").permitAll()
+                                    .requestMatchers("/auth/**").permitAll()
+                                    .requestMatchers("/api/images/**").permitAll()
+                                    .anyRequest().permitAll()
                     )
 
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
