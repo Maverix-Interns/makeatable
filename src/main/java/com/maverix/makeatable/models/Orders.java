@@ -25,7 +25,8 @@ public class Orders {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime fromDateTime;
+    private LocalDateTime toDateTime;
 
     private Long seatNum;
 
