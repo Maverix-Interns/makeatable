@@ -10,7 +10,7 @@ public class MailSender {
 
     @Value("${base.url}")
     private String baseUrl;
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
     public MailSender(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
