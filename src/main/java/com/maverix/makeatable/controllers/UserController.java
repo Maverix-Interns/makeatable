@@ -1,5 +1,6 @@
 package com.maverix.makeatable.controllers;
 
+import com.maverix.makeatable.config.Security.Dto.AuthenticationResponse;
 import com.maverix.makeatable.config.Security.JwtService;
 import com.maverix.makeatable.dto.User.UserGetDto;
 import com.maverix.makeatable.dto.User.UserIdDto;
@@ -53,6 +54,19 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Response<UserGetDto>> getUserByIdBody(@RequestBody UserIdDto userIdDto) {
         UserGetDto user = userService.getUserById(userIdDto.getId());
+        Response<UserGetDto> response = Response.<UserGetDto>builder()
+                .timeStamp(LocalDateTime.now())
+                .statusCode(HttpStatus.OK.value())
+                .status(HttpStatus.OK)
+                .message("User retrieved successfully")
+                .data(user)
+                .build();
+        return ResponseEntity.ok(response);
+    }
+    @PostMapping
+    public ResponseEntity<Response<UserGetDto>> getUserByJwt(@RequestBody AuthenticationResponse userDto) {
+        ;
+        UserGetDto user = userService.getUserById(Long.valueOf(jwtService.extractId(userDto.getToken())));
         Response<UserGetDto> response = Response.<UserGetDto>builder()
                 .timeStamp(LocalDateTime.now())
                 .statusCode(HttpStatus.OK.value())
