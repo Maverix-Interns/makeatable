@@ -63,7 +63,7 @@ public class UserController {
                 .build();
         return ResponseEntity.ok(response);
     }
-    @PostMapping
+    @PostMapping("/jwt")
     public ResponseEntity<Response<UserGetDto>> getUserByJwt(@RequestBody AuthenticationResponse userDto) {
         ;
         UserGetDto user = userService.getUserById(Long.valueOf(jwtService.extractId(userDto.getToken())));
