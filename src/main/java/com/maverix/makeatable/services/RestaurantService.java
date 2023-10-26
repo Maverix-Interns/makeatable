@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -49,7 +50,7 @@ public class RestaurantService {
         return null;
 
     }
-
+    @Cacheable(value = "cache1", key = "methodName", unless = "#result == null", cacheManager = "cacheManagerWith10sTTL")
     public List<RestaurantGetDto> getAllRestaurants() {
         List<Restaurant> restaurants = restaurantRepository.findAll();
         return restaurants.stream()

@@ -26,7 +26,10 @@ public class RestaurantController {
         this.restaurantService = restaurantService;
         this.jwtService = jwtService;
     }
-
+    @GetMapping("/all")
+    public List<RestaurantGetDto> getAllRestaurants() {
+        return restaurantService.getAllRestaurants();
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Response<RestaurantGetDto>> getRestaurantById(@PathVariable Long id) {
         RestaurantGetDto restaurant = restaurantService.getRestaurantById(id);
